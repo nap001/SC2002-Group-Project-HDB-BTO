@@ -1,51 +1,25 @@
-import java.time.LocalDate;
 import java.util.Map;
 
 public class Report {
-    private static int reportCounter = 1;
-    private int reportID;
-    private HDBManager generatedBy;
-    private LocalDate generationDate;
-    private Map<String, String> filters;
+    private Map<String, String> filter;
     private String content;
 
-    public Report(HDBManager generatedBy, Map<String, String> filters) {
-        this.reportID = reportCounter++;
-        this.generatedBy = generatedBy;
-        this.generationDate = LocalDate.now();
-        this.filters = filters;
-        this.content = generateContent();
+    public Report(Map<String, String> filter, String content) {
+        this.filter = filter;
+        this.content = content;
     }
 
-    private String generateContent() {
-        StringBuilder reportContent = new StringBuilder("Report Generated on: " + generationDate + "\nFilters: ");
-        for (Map.Entry<String, String> entry : filters.entrySet()) {
-            reportContent.append("\n").append(entry.getKey()).append(": ").append(entry.getValue());
-        }
-        return reportContent.toString();
-    }
-
-    public int getReportID() {
-        return reportID;
-    }
-
-    public HDBManager getGeneratedBy() {
-        return generatedBy;
-    }
-
-    public LocalDate getGenerationDate() {
-        return generationDate;
-    }
-
-    public Map<String, String> getFilters() {
-        return filters;
+    public Map<String, String> getFilter() {
+        return filter;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void printReport() {
+    public void displayReport() {
+        System.out.println("===== Applicant Report =====");
+        System.out.println("Filters Applied: " + filter);
         System.out.println(content);
     }
 }
