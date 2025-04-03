@@ -14,7 +14,6 @@ public class Project {
     private List<Enquiry> enquiries;
     private List<Applicant> applicants;
     private List<HDBOfficer> hdbOfficers;
-    private List<HDBOfficer> pendingOfficerApplications; // New list for pending applications
 
     public Project(int projectID, String projectName, String neighbourhood, LocalDate applicationOpenDate,
                    LocalDate applicationCloseDate, boolean visibility, int officerSlots,
@@ -29,41 +28,21 @@ public class Project {
         this.availableUnits = availableUnits;
         this.hdbManager = hdbManager;
         this.hdbOfficers = new ArrayList<>();
-        this.pendingOfficerApplications = new ArrayList<>();
     }
 
-    // HDB Officer applies to a project
-    public boolean applyToProject(HDBOfficer officer) {
-        if (!pendingOfficerApplications.contains(officer)) {
-            pendingOfficerApplications.add(officer);
-            return true; // Successfully applied
-        }
-        return false; // Officer has already applied
-    }
+ 
 
-    // HDB Manager approves an officer
-    public boolean approveOfficerApplication(HDBOfficer officer) {
-        if (pendingOfficerApplications.contains(officer) && hdbOfficers.size() < officerSlots) {
-            hdbOfficers.add(officer);
-            this.officerSlots = officerSlots-1;
-            pendingOfficerApplications.remove(officer);
-            return true; // Successfully approved and assigned
-        }
-        return false; // Approval failed (slots full or officer not found)
-    }
-    
-    
-    // Get list of pending officer applications
-    public List<HDBOfficer> getPendingOfficerApplications() {
-        return new ArrayList<>(pendingOfficerApplications);
+
+    // Get list of pending officer registrations
+    public List<OfficerRegistration> getPendingOfficerRegistrations() {
+        return new ArrayList<>(pendingOfficerRegistrations);
     }
 
     // Remaining available units
     public int getRemainingUnits(FlatType flatType) {
         return availableUnits.getOrDefault(flatType, 0);
     }
-   
-    
+
     public void displayProjectDetails() {
         System.out.println("=== Project Details ===");
         System.out.println("Project ID: " + projectID);
@@ -73,14 +52,14 @@ public class Project {
         System.out.println("Application Close Date: " + applicationCloseDate);
         System.out.println("Visibility: " + (visibility ? "Visible" : "Hidden"));
         System.out.println("Officer Slots: " + officerSlots);
-        
+
         // Display available units
         System.out.println("Available Units:");
         for (Map.Entry<FlatType, Integer> entry : availableUnits.entrySet()) {
             System.out.println("  - " + entry.getKey().getDisplayName() + ": " + entry.getValue() + " units");
         }
-        
-        // Display approved HDB officers
+
+        // Display assigned HDB officers
         System.out.println("\nAssigned HDB Officers:");
         if (hdbOfficers.isEmpty()) {
             System.out.println("  - No officers assigned yet.");
@@ -89,21 +68,19 @@ public class Project {
                 System.out.println("  - " + officer.getNRIC()); // Assuming HDBOfficer has a getNRIC() method
             }
         }
-        
-        // Display pending HDB officers
-        System.out.println("\nPending HDB Officer Applications:");
-        if (pendingOfficerApplications.isEmpty()) {
-            System.out.println("  - No pending officer applications.");
+
+        // Display pending officer registrations
+        System.out.println("\nPending HDB Officer Registrations:");
+        if (pendingOfficerRegistrations.isEmpty()) {
+            System.out.println("  - No pending officer registrations.");
         } else {
-            for (HDBOfficer officer : pendingOfficerApplications) {
-                System.out.println("  - " + officer.getNRIC()); // Assuming HDBOfficer has a getNRIC() method
+            for (OfficerRegistration registration : pendingOfficerRegistrations) {
+                System.out.println("  - Officer NRIC: " + registration.getOfficer().getNRIC() + " | Status: " + (registration.getStatus() ? "Approved" : "Pending"));
             }
         }
 
         System.out.println("=======================\n");
     }
-   
-
 
     // Getters and Setters
     public int getProjectID() { return projectID; }
