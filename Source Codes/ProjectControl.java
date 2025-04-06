@@ -1,24 +1,32 @@
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
-public class ProjectManagement {
-    private ProjectList database;
+public class ProjectControl {
+    private ProjectList projectDatabase;
 
-    public ProjectManagement(ProjectList database) {
-        this.database = database;
+    public ProjectControl(ProjectList projectDatabase) {
+        this.projectDatabase = projectDatabase;
     }
 
     public void createProject(HDBManager manager, int projectID, String projectName, String neighbourhood, 
                               LocalDate applicationOpenDate, LocalDate applicationCloseDate, 
                               boolean visibility, int officerSlots, Map<FlatType, Integer> availableUnits) {
+        // Check for existing project with the same ID
+        if (projectDatabase.getProjects(projectID) != null) {
+            System.out.println("A project with ID " + projectID + " already exists. Creation aborted.");
+            return;
+        }
+
+
         // Create the project with the provided information
-        Project project = new Project(projectID, projectName, neighbourhood, applicationOpenDate, 
+        Project project = new Project(projectID, projectName, neighbourhood, applicationOpenDate,
                                       applicationCloseDate, visibility, officerSlots, availableUnits, manager);
-        database.addProject(project);
+        projectDatabase.addProject(project);
         System.out.println("Project created: " + project.getProjectName());
 
         // Automatically assign the manager to manage the project
-        Project assignedProject = getProject(projectID); // Fetch the project from database
+        Project assignedProject = projectDatabase.getProjects(projectID); // Fetch the project from database
         if (assignedProject != null && isProjectActive(assignedProject)) {
             manager.setCurrentlyManagedProject(assignedProject); // Automatically manage the project
             System.out.println("You are now managing the project: " + assignedProject.getProjectName());
@@ -28,7 +36,7 @@ public class ProjectManagement {
     }
 
     public void editProject(HDBManager manager, int projectID, int choice, Object newValue) {
-        Project project = database.getProjects(projectID);
+        Project project = projectDatabase.getProjects(projectID);
         if (project == null || !project.getHdbManager().equals(manager)) {
             System.out.println("Project not found or access denied.");
             return;
@@ -50,9 +58,9 @@ public class ProjectManagement {
     }
 
     public void removeProject(HDBManager manager, int projectID) {
-        Project project = database.getProjects(projectID);
+        Project project = projectDatabase.getProjects(projectID);
         if (project != null && project.getHdbManager().equals(manager)) {
-            database.removeProject(project);
+        	projectDatabase.removeProject(project);
             System.out.println("Project Removed: " + project.getProjectName());
         } else {
             System.out.println("Project not found or access denied.");
@@ -60,13 +68,20 @@ public class ProjectManagement {
     }
 
     public void toggleProjectVisibility(HDBManager manager, int projectID, boolean isVisible) {
-        Project project = database.getProjects(projectID);
+        Project project = projectDatabase.getProjects(projectID);
         if (project != null && project.getHdbManager().equals(manager)) {
             project.setVisibility(isVisible);
             System.out.println("Project visibility updated: " + isVisible);
         } else {
             System.out.println("Project not found or access denied.");
         }
+    }
+    
+    public void viewAllProject() {
+    	List<Project> projects = projectDatabase.getAllProjects();
+    	for (Project project:projects) {
+    		project.displayProjectDetails();
+    	}
     }
 
     // Helper method to check if the project is active based on its open and close dates
@@ -77,6 +92,10 @@ public class ProjectManagement {
 
     // Fetch a project by ID from the database
     public Project getProject(int projectID) {
-        return database.getProjects(projectID); // Assume `getProjects` fetches the project by its ID
+        return projectDatabase.getProjects(projectID); // Assume `getProjects` fetches the project by its ID
+    }
+    
+    public List<Project> filterProjectsByManager(HDBManager manager) {
+        return projectDatabase.getProjects(manager);
     }
 }
