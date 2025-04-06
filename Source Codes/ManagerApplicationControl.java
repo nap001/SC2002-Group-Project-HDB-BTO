@@ -1,17 +1,18 @@
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-public class ApplicationManagement {
-    private ProjectList database;
+public class ManagerApplicationControl {
+    private ProjectList projectDatabase;
 
-    public ApplicationManagement(ProjectList database) {
-        this.database = database;
+    public ManagerApplicationControl(ProjectList projectDatabase) {
+        this.projectDatabase = projectDatabase;
     }
 
     // Method to approve an officer's registration
     public boolean approveOfficerRegistration(HDBManager manager, int projectID, OfficerRegistration officerRegistration, boolean approved) {
         // Fetch the project by projectID
-        Project project = database.getProjects(projectID);
+        Project project = projectDatabase.getProjects(projectID);
         if (project == null) {
             System.out.println("Project not found.");
             return false;
@@ -52,9 +53,22 @@ public class ApplicationManagement {
         System.out.println("Officer is not an applicant.");
         return false;
     }
-    
- // Method to approve an applicant's application
-    public boolean approveApplicantApplication(HDBManager manager, ApplicantApplication application) {
+    // Method to approve an applicant's application
+    public boolean approveApplicantApplication(HDBManager manager, List<ApplicantApplication> applicantDatabase, int applicationID, boolean approved) {
+        // Iterate over the list to find the application by ID
+        ApplicantApplication application = null;
+        for (ApplicantApplication app : applicantDatabase) {
+            if (app.getApplicationID() == applicationID) {
+                application = app;
+                break;
+            }
+        }
+
+        if (application == null) {
+            System.out.println("Application not found.");
+            return false;
+        }
+
         Project project = application.getProject();
         FlatType flatType = application.getFlatType();
         ApplicationStatus status = application.getApplicationStatus();
@@ -75,23 +89,34 @@ public class ApplicationManagement {
         Map<FlatType, Integer> availableUnitsMap = project.getAvailableUnits();
         int availableUnits = availableUnitsMap.getOrDefault(flatType, 0);
 
-        if (availableUnits > 0) {
-            // Approve the application
-            application.setApplicationStatus(ApplicantApplication.ApplicationStatus.SUCCESSFUL);
+        if (approved) {
+            if (availableUnits > 0) {
+                // Approve the application
+                application.setApplicationStatus(ApplicantApplication.ApplicationStatus.SUCCESSFUL);
 
-            // Update the available units map by decreasing the count for the requested flat type
-            availableUnitsMap.put(flatType, availableUnits - 1);
-            
-            // Apply the updated map to the project
-            project.setAvailableUnits(availableUnitsMap);
+                // Add the applicant to the project if the application is approved
+                project.addApplicantToProject(application.getApplicant());  // Assuming there's a method for adding applicants to the project
+                
+                // Update the available units map by decreasing the count for the requested flat type
+                availableUnitsMap.put(flatType, availableUnits - 1);
 
-            System.out.println("Application approved for Applicant ID: " + application.getApplicantID());
-            return true;
+                // Apply the updated map to the project
+                project.setAvailableUnits(availableUnitsMap);
+
+                System.out.println("Application approved for Applicant ID: " + application.getApplicantID());
+            } else {
+                // Not enough available units, mark as unsuccessful
+                application.setApplicationStatus(ApplicantApplication.ApplicationStatus.UNSUCCESSFUL);
+                System.out.println("No available units for the requested flat type.");
+            }
         } else {
-            // Not enough available units, mark as unsuccessful
-            application.setApplicationStatus(ApplicantApplication.ApplicationStatus.UNSUCCESSFUL);
-            System.out.println("No available units for the requested flat type.");
-            return false;
+            // Reject the application
+            application.setApplicationStatus(ApplicantApplication.ApplicationStatus.REJECTED);
+            System.out.println("Application rejected for Applicant ID: " + application.getApplicantID());
         }
+
+        // Remove the application from the database after approval/rejection
+        applicantDatabase.remove(application);
+        return true;
     }
 }
