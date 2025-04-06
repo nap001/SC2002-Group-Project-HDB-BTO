@@ -17,9 +17,8 @@ public class Report {
         return content;
     }
 
-    public void displayReport() {
-        System.out.println("===== Applicant Report =====");
-        System.out.println("Filters Applied: " + filter);
-        System.out.println(content);
+    public void print() {
+        System.out.println("Filter Criteria: " + filter);
+        System.out.println("Report:\n" + content);
     }
 }
