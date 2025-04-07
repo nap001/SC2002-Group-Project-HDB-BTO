@@ -9,11 +9,12 @@ public class ManagerApplicationControl {
     private List<OfficerRegistration> officerRegistrationDatabase;
     private List<ApplicantApplication> applicantDatabase;
 
-    public ManagerApplicationControl(ProjectList projectDatabase) {
+    public ManagerApplicationControl(ProjectList projectDatabase, List<OfficerRegistration> officerRegistrationDatabase, List<ApplicantApplication> applicantDatabase) {
         this.projectDatabase = projectDatabase;
-        this.officerRegistrationDatabase = new ArrayList<>();
-        this.applicantDatabase = new ArrayList<>();
+        this.officerRegistrationDatabase = officerRegistrationDatabase;
+        this.applicantDatabase = applicantDatabase;
     }
+
 
     public List<OfficerRegistration> getOfficerRegistrationDatabase() {
         return officerRegistrationDatabase;
