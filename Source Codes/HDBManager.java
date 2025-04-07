@@ -63,14 +63,13 @@ public class HDBManager extends User {
         }
     }
 
-    public boolean approveOfficerApplication(ManagerApplicationControl applicationManagement, int projectID,
-                                             OfficerRegistration officerRegistration, boolean approved) {
-        if (isManagingProject(projectID)) {
-            return applicationManagement.approveOfficerRegistration(this, projectID, officerRegistration, approved);
-        }
-        System.out.println("You are not managing this project.");
-        return false;
-    }
+    public boolean approveOfficerApplication(ManagerApplicationControl applicationManagement, int projectID, int registrationID, boolean approved) {
+			if (isManagingProject(projectID)) {
+				return applicationManagement.approveOfficerRegistration(this, projectID, registrationID, approved);
+			}
+				System.out.println("You are not managing this project.");
+			return false;
+    	}	
 
     // Check if the manager is managing a project
     public boolean isManagingProject(int projectID) {
