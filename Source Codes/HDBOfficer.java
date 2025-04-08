@@ -1,61 +1,48 @@
 
+import java.util.List;
+
 public class HDBOfficer extends Applicant {
-    private String registeredProjectId; 
-    private String registrationStatus;  
+    private Project assignedProject;
 
-    public HDBOfficer(String nric, String name, int age, String maritalStatus) {
-        super(nric, name, age, maritalStatus);
-        this.registeredProjectId = null;
-        this.registrationStatus = null;
+    public HDBOfficer(String NRIC, String password, int age, String maritalStatus) {
+        super(NRIC, password, age, maritalStatus);
+        this.assignedProject = null;
     }
 
-    // Register to handle a BTO project
-    public boolean registerAsOfficer(String projectId, boolean isEligible, boolean alreadyRegisteredOther) {
-        if (this.hasAppliedToProject(projectId)) return false; 
-        if (alreadyRegisteredOther) return false; 
-        this.registeredProjectId = projectId;
-        this.registrationStatus = "Pending";
-        return true;
+    public void assignProject(Project project) {
+        this.assignedProject = project;
+        System.out.println("Assigned to project: " + project.getProjectName());
     }
 
-    public void setRegistrationStatus(String status) {
-        this.registrationStatus = status;
+    public Project getAssignedProject() {
+        return assignedProject;
     }
 
-    public String getRegistrationStatus() {
-        return this.registrationStatus;
-    }
-
-    public String getRegisteredProjectId() {
-        return this.registeredProjectId;
-    }
-
-    // Reply to enquiry
-    public void replyToEnquiry(Enquiry enquiry, String reply) {
-        if (enquiry.getProjectId().equals(this.registeredProjectId)) {
-            enquiry.setReply(reply);
+    public void bookFlatForApplicant(Applicant applicant, FlatType flatType) {
+        if (assignedProject == null) {
+            System.out.println("You are not assigned to any project.");
+            return;
         }
+
+        int remaining = assignedProject.getRemainingUnits(flatType);
+        if (remaining <= 0) {
+            System.out.println("No more units available for " + flatType);
+            return;
+        }
+
+        applicant.setBookedFlat(flatType);
+        applicant.getApplication().setApplicationStatus(ApplicantApplication.ApplicationStatus.BOOKED);
+        assignedProject.getAvailableUnits().put(flatType, remaining - 1);
+
+        System.out.println("Flat booked for applicant: " + applicant.getNRIC());
     }
 
-    // Flat booking on behalf of successful applicant
-    public boolean bookFlat(Applicant applicant, Project project, String flatType) {
-        if (!project.getProjectId().equals(this.registeredProjectId)) return false;
-        if (!applicant.getApplicationStatus().equals("Successful")) return false;
-        if (!project.bookFlat(flatType)) return false; 
-        applicant.setApplicationStatus("Booked");
-        applicant.setBookedFlatType(flatType);
-        return true;
-    }
-
-    // Generate booking receipt
-    public String generateReceipt(Applicant applicant, Project project) {
-        if (!applicant.getApplicationStatus().equals("Booked")) return "No booking found.";
-        return "----- Booking Receipt -----\n"
-             + "Name: " + applicant.getName() + "\n"
-             + "NRIC: " + applicant.getNRIC() + "\n"
-             + "Age: " + applicant.getAge() + "\n"
-             + "Marital Status: " + applicant.getMaritalStatus() + "\n"
-             + "Project: " + project.getName() + "\n"
-             + "Flat Type: " + applicant.getBookedFlatType() + "\n";
+    public void handleEnquiries(List<Enquiry> enquiries) {
+        System.out.println("Handling enquiries for project: " + assignedProject.getProjectName());
+        for (Enquiry e : enquiries) {
+            if (e.getProject().equals(assignedProject)) {
+                System.out.println("Enquiry ID: " + e.getEnquiryId());
+            }
+        }
     }
 }
