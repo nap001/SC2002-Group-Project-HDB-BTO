@@ -1,4 +1,5 @@
 package CSVHandling;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -10,10 +11,10 @@ import java.util.Date;
 import java.util.List;
 
 import Application.*;
-import Enum.ApplicationStatus;
+import Entities.User;
 import Interfaces.CSVHandler;
 
-class EnquiryCSVHandler implements CSVHandler<Enquiry> {
+public class EnquiryCSVHandler implements CSVHandler<Enquiry> {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
@@ -34,7 +35,24 @@ class EnquiryCSVHandler implements CSVHandler<Enquiry> {
                     String responderNRIC = columns[6];
                     Date responseDate = dateFormat.parse(columns[7]);
 
-                    Enquiry enquiry = new Enquiry(enquiryID, projectName, enquiryContent, applicantNric, response, responderNRIC, submissionDate, responseDate);
+                    // Retrieve or create User objects for applicant and responder
+                    User applicant = new User(); // Assuming you can retrieve the User based on NRIC
+                    applicant.setNric(applicantNric); // Set the NRIC to search for the user
+
+                    User responder = new User(); // Similar to applicant
+                    responder.setNric(responderNRIC); // Set the NRIC for responder
+
+                    // Retrieve the project based on the project name
+                    Project project = new Project();
+                    project.setProjectName(projectName); // Assuming you are storing projects by name
+
+                    Enquiry enquiry = new Enquiry(applicant, project, enquiryContent);
+                    enquiry.setEnquiryID(enquiryID);
+                    enquiry.setEnquiryDate(submissionDate);
+                    enquiry.setResponse(response);
+                    enquiry.setResponseDate(responseDate);
+                    enquiry.setResponder(responder);
+
                     enquiries.add(enquiry);
                 }
             }
@@ -50,9 +68,14 @@ class EnquiryCSVHandler implements CSVHandler<Enquiry> {
             writer.write("enquiryID,projectName,enquiryContent,applicantNric,submissionDate,response,responderNRIC,responseDate\n");
             for (Enquiry enquiry : enquiries) {
                 String line = String.format("\"%d\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"",
-                        enquiry.getEnquiryID(), enquiry.getProjectName(), enquiry.getEnquiryContent(),
-                        enquiry.getApplicantNric(), dateFormat.format(enquiry.getSubmissionDate()),
-                        enquiry.getResponse(), enquiry.getResponderNRIC(), dateFormat.format(enquiry.getResponseDate()));
+                        enquiry.getEnquiryID(),
+                        enquiry.getProject().getProjectName(),
+                        enquiry.getEnquiryString(),
+                        enquiry.getApplicant().getNRIC(),
+                        dateFormat.format(enquiry.getEnquiryDate()),
+                        enquiry.getResponse(),
+                        enquiry.getResponder() != null ? enquiry.getResponder().getNRIC() : "",
+                        dateFormat.format(enquiry.getResponseDate()));
                 writer.write(line + "\n");
             }
         } catch (IOException e) {

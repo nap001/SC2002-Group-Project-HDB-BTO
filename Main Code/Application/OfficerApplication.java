@@ -42,7 +42,7 @@ public class OfficerApplication{
 
 	public HDBOfficer getOfficer() {return officer;}
 	public void setOfficer(HDBOfficer officer) {this.officer = officer;}
-	public Project getProject() {return project;
+	public Project getProject() {return project;}
 	public void setProject(Project project) {this.project = project;}
 	private Project project;
 	public ApplicationStatus getApplicationStatus() {return applicationStatus;}

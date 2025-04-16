@@ -217,5 +217,9 @@ public class User {
         }
         return null;  // Return null if no project is found with the given name
     }
+    public void setNric(String applicantNric) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setNric'");
+    }
 
 }

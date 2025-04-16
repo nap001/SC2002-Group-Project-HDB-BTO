@@ -9,10 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Application.*;
+import Entities.Applicant;
 import Enum.ApplicationStatus;
+import Enum.FlatType;
 import Interfaces.CSVHandler;
-
 class ApplicationCSVHandler implements CSVHandler<Application> {
+
     @Override
     public List<Application> loadFromCSV(String filePath) {
         List<Application> applications = new ArrayList<>();
@@ -27,6 +29,7 @@ class ApplicationCSVHandler implements CSVHandler<Application> {
                     String flatType = columns[2];
                     String statusString = columns[3].trim();
 
+                    // Convert string status to ApplicationStatus enum
                     ApplicationStatus status;
                     try {
                         status = ApplicationStatus.valueOf(statusString);
@@ -35,7 +38,16 @@ class ApplicationCSVHandler implements CSVHandler<Application> {
                         status = ApplicationStatus.PENDING;
                     }
 
-                    applications.add(new Application());
+                    // Assuming Applicant and Project are objects you can create/lookup using the nric and projectName
+                    Applicant applicant = new Applicant(); // You need to implement applicant retrieval or creation
+                    Project project = new Project(); // You need to implement project retrieval or creation
+                    FlatType flatTypeEnum = FlatType.valueOf(flatType); // assuming FlatType is an enum
+
+                    // Create and add the application
+                    Application application = new Application(applicant, project);
+                    application.setFlatType(flatTypeEnum);
+                    application.setApplicationStatus(status);
+                    applications.add(application);
                 }
             }
         } catch (IOException e) {
@@ -49,8 +61,14 @@ class ApplicationCSVHandler implements CSVHandler<Application> {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write("nric,projectName,flatType,status\n");
             for (Application app : applications) {
+                // Modify according to your implementation for retrieving applicant info and project name
+                String applicantNric = app.getApplicant().getNRIC(); // Assuming getNRIC method exists
+                String projectName = app.getProject().getProjectName(); // Assuming getName method exists
+                String flatType = app.getFlatType().name(); // Assuming FlatType is an enum
+                String status = app.ApplicationStatustoString(app.getApplicationStatus()); // Convert enum to String
+                
                 String line = String.format("\"%s\",\"%s\",\"%s\",\"%s\"",
-                        app.getNric(), app.getProjectName(), app.getFlatType(), app.getApplicationStatus());
+                        applicantNric, projectName, flatType, status);
                 writer.write(line + "\n");
             }
         } catch (IOException e) {
