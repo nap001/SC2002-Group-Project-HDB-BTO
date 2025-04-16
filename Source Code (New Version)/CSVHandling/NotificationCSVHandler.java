@@ -18,29 +18,31 @@ class NotificationCSVHandler implements CSVHandler<Notification> {
     public List<Notification> loadFromCSV(String filePath) {
         List<Notification> notifications = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            br.readLine();
-            while ((line = br.readLine()) != null) {
-                String[] columns = line.split(",");
-                if (columns.length >= 3) {
-                    String recipient = columns[0];
-                    String message = columns[1];
-                    String date = columns[2];
-                    notifications.add(new Notification(recipient, message, date));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return notifications;
-    }
+	        String line;
+	        br.readLine(); // Skip the header
+	        while ((line = br.readLine()) != null) {
+	            String[] columns = line.split(",");
+	            if (columns.length == 2) {  // NRIC of User and Notification
+	                String nric = columns[0].trim();
+	                String notification = columns[1].trim();
+	                
+	                notifications.add(new Notification(nric, notification));
+	            }
+	        }
+	    } catch (IOException e) {
+	        System.out.println("Unable to load notifications, please try again. " + e.getMessage());
+	    }
+	    return notifications;
+	}
 
     @Override
     public void saveToCSV(List<Notification> notifications, String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write("recipient,message,date\n");
             for (Notification n : notifications) {
-                writer.write(String.format("%s,%s,%s\n", n.getRecipient(), n.getMessage(), n.getDate()));
+                writer.write(String.format("%s,%s,%s\n", 	                
+                		n.getNric(),
+    	                n.getMessage()));
             }
         } catch (IOException e) {
             e.printStackTrace();
