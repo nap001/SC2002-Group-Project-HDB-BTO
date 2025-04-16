@@ -1,10 +1,13 @@
 package Controller;
+import java.util.Scanner; // Add this import at the top of your file
 
 import Application.*;
 import Boundaries.*;
 import Controller.*;
 import Entities.*;
 import Enum.*;
+import Collection.*;
+import Interfaces.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -17,12 +20,17 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 public class ReportController {
-	public ReportController() {
+    private ProjectList projectList;
+    private ReportList reportList;
+
+    public ReportController(ProjectList projectList, ReportList reportList) {
+        this.projectList = projectList;
+        this.reportList = reportList;
     }
-    
-	public Map<String, Object> collectFilterCriteriaFromUser(HDBManager currentManager) {
+
+    public Map<String, Object> collectFilterCriteriaFromUser(HDBManager currentManager) {
         // Get filter criteria from the user
-		System.out.println("Select Filter Criteria:");
+        System.out.println("Select Filter Criteria:");
         System.out.println("1. All Applicants");
         System.out.println("2. Married Applicants");
         System.out.println("3. Single Applicants");
@@ -35,11 +43,11 @@ public class ReportController {
 
         switch (filterChoice) {
             case 1:
-            	System.out.println("Generating report that includes: All applicants.");
+                System.out.println("Generating report that includes: All applicants.");
                 break;
             case 2:
                 selectedFilters.put("maritalStatus", "Married");
-                System.out.println("Generating report that inlcudes: married applicants.");
+                System.out.println("Generating report that includes: married applicants.");
                 break;
             case 3:
                 selectedFilters.put("maritalStatus", "Single");
@@ -62,17 +70,17 @@ public class ReportController {
     }
 
     // Method to create and generate the report based on filters and projects
-    public Report generateReport(String reportTitle, Map<String, Object> filters, List<Project> projects) {
+    public Report generateReport(String reportTitle, Map<String, Object> filters) {
         Report newReport = new Report(reportTitle, filters);
-        collectBookings(newReport, projects, filters);
+        collectBookings(newReport, filters);
         return newReport;
     }
 
     // Method to collect bookings based on the filters
-    private void collectBookings(Report newReport, List<Project> projects, Map<String, Object> filters) {
+    private void collectBookings(Report newReport, Map<String, Object> filters) {
         Set<String> processedApplicantNrics = new HashSet<>();
 
-        for (Project project : projects) {
+        for (Project project : projectList.getProjects()) {
             if (filters.containsKey("project") && !filters.get("project").equals(project)) {
                 continue;
             }
@@ -151,20 +159,19 @@ public class ReportController {
         System.out.println("2. 3-Room");
         int flatTypeChoice = getIntegerInput("Enter your choice: ", 1, 2);
         selectedFilters.put("flatType", (flatTypeChoice == 1) ? FlatType.TWO_ROOM : FlatType.THREE_ROOM);
-        System.out.println
-        ("Generating report for " + (flatTypeChoice == 1 ? "2-Room" : "3-Room") + " flat applications.");
+        System.out.println("Generating report for " + (flatTypeChoice == 1 ? "2-Room" : "3-Room") + " flat applications.");
     }
 
     // Method to handle project filter
     private void addProjectFilter(Map<String, Object> selectedFilters, HDBManager currentManager) {
-    	ProjectController PC = new ProjectController();
-        List<Project> availableProjects = PC.getAllProjects();
-        List<Project> managerProjects = PC.getProjectsByManager(currentManager);
+        ProjectController PC = new ProjectController(projectList);
+        List<Project> availableProjects = projectList.getProjects();
+        List<Project> managerProjects = projectList.getProjectsByManager(currentManager);
 
         if (managerProjects.isEmpty()) {
-        	System.out.println("You don't have any projects. Generating report for all projects.");
+            System.out.println("You don't have any projects. Generating report for all projects.");
         } else {
-        	System.out.println("Your Projects:");
+            System.out.println("Your Projects:");
             for (int i = 0; i < managerProjects.size(); i++) {
                 Project project = managerProjects.get(i);
                 System.out.println((i + 1) + ". " + project.getProjectName());
@@ -177,27 +184,29 @@ public class ReportController {
                 selectedFilters.put("project", selectedProject);
                 System.out.println("Generating report for project: " + selectedProject.getProjectName());
             } else {
-            	System.out.println("Generating report for all projects.");
+                System.out.println("Generating report for all projects.");
             }
         }
     }
 
-    // Method to handle age range filter
-    private void addAgeRangeFilter(Map<String, Object> selectedFilters) {
-        int minAge = getIntegerInput("Enter minimum age: ", 0);
-        int maxAge = getIntegerInput("Enter maximum age: ", minAge);
+ // Method to handle age range filter
+    private void addAgeRangeFilter(Map<String, String> selectedFilters) {
+        int minAge = getIntegerInput("Enter minimum age: ", 0, Integer.MAX_VALUE); // Get minimum age from user input
+        int maxAge = getIntegerInput("Enter maximum age: ", minAge, Integer.MAX_VALUE); // Get maximum age from user input, ensuring it's greater than or equal to minAge
         selectedFilters.put("minAge", minAge);
         selectedFilters.put("maxAge", maxAge);
         System.out.println("Generating report for applicants aged " + minAge + " to " + maxAge);
     }
-    
+
+
     public static int getIntegerInput(String prompt, int min, int max) {
         int input = -1; // Initializing with a value that is outside the valid range
+        Scanner sc = new Scanner(System.in); // Initialize the scanner
 
         while (true) {
             System.out.print(prompt); // Show the prompt message to the user
             try {
-                input = Integer.parseInt(scanner.nextLine()); // Read user input and try to parse it to an integer
+                input = Integer.parseInt(sc.nextLine()); // Read user input and try to parse it to an integer
 
                 // Check if the input is within the valid range
                 if (input >= min && input <= max) {

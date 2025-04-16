@@ -96,7 +96,7 @@ public class AuthorisationController {
 	public List<User> getAllUser() {
 		List<User> result = new ArrayList<>();
 		for (User user:users.values()) {
-			result.add(user)
+			result.add(user);
 		}
 		return result;
 	}
