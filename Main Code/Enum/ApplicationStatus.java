@@ -1,0 +1,11 @@
+package Enum;
+
+public enum ApplicationStatus {
+	PENDING,
+    SUCCESSFUL,
+    UNSUCCESSFUL,
+    BOOKED,  
+    WITHDRAWNPENDING,
+    WITHDRAWNSUCCESSFUL,
+    WITHDRAWNUNSUCCESSFUL
+}
