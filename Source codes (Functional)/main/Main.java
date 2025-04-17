@@ -39,6 +39,47 @@ public class Main {
         if (applicantApplicationList == null) applicantApplicationList = new ApplicantApplicationList();
         if (flatBookingList == null) flatBookingList = new FlatBookingList();
 
+        //CAN DELETE MANUAL OBJECT INITIALISING AFTER FIRST RUN//
+
+        // === Sample Users (in place of a real DB or CSV file) 
+        //FROM HERE//
+        HDBManager manager1 = new HDBManager("S1234567A", "pass123", 35, "Single", "Manager John");
+        HDBOfficer officer1 = new HDBOfficer("S9876543B", "pass456", 30, "Married", "Officer Jane");
+        Applicant applicant1 = new Applicant("S8888888C", "pass789", 36, "Single", "Applicant Alex");
+
+        userList.addUser(manager1);
+        userList.addUser(officer1);
+        userList.addUser(applicant1);
+
+        Map<FlatType, Integer> unitCountMap = new HashMap<>();
+        unitCountMap.put(FlatType.TWO_ROOM, 100);
+        unitCountMap.put(FlatType.THREE_ROOM, 80);
+
+        Map<FlatType, Double> priceMap = new HashMap<>();
+        priceMap.put(FlatType.TWO_ROOM, 250000.0);
+        priceMap.put(FlatType.THREE_ROOM, 320000.0);
+
+        List<HDBOfficer> officerList = new ArrayList<>();
+
+        Project sampleProject = new Project(
+                "Tampines GreenWeave",
+                "Tampines",
+                LocalDate.of(2025, 5, 1),
+                LocalDate.of(2025, 5, 31),
+                true,
+                5,
+                unitCountMap,
+                priceMap,
+                manager1,
+                officerList
+        );
+        manager1.setCurrentlyManagedProject(sampleProject);
+
+        // Add to the project list
+        projectList.addProject(sampleProject);
+
+        //TILL HERE//
+
 
         // === Initialize Control Classes ===
         ProjectControl projectControl = new ProjectControl(projectList);
