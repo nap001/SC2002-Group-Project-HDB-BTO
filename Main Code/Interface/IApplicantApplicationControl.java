@@ -17,6 +17,6 @@ public interface IApplicantApplicationControl {
     void displayApplicationDetails(ApplicantApplication application);
     
     // Method to process the application for an applicant
-    void processApplication(Applicant applicant, IProjectControl projectControl);
+    void processApplication(Applicant applicant, IApplicantProjectControl projectControl);
 
 }

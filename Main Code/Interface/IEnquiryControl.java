@@ -18,16 +18,16 @@ public interface IEnquiryControl {
     void viewAllEnquiries();
 
     // Method to submit an enquiry from the applicant
-    void submitEnquiry(Applicant applicant, IProjectControl projectControl);
+    void submitEnquiry(Applicant applicant, IApplicantProjectControl projectControl);
 
     // Method to view all enquiries related to a specific applicant
     void viewEnquiries(Applicant applicant);
 
     // Method to edit an enquiry created by the applicant
-    void editEnquiry(Applicant applicant, IProjectControl projectControl);
+    void editEnquiry(Applicant applicant, IApplicantProjectControl projectControl);
 
     // Method to delete an enquiry created by the applicant
-    void deleteEnquiry(Applicant applicant, IProjectControl projectControl);
+    void deleteEnquiry(Applicant applicant, IApplicantProjectControl projectControl);
 
     // Method to allow a user (manager/officer) to reply to enquiries related to their project
     void replyToEnquiries(User user);

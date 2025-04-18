@@ -5,6 +5,8 @@ import java.util.Scanner;
 import Boundary.HDBOfficer;
 import Entity.Project;
 import Interface.IApplicantApplicationControl;
+import Interface.IApplicantEnquiryControl;
+import Interface.IApplicantProjectControl;
 import Interface.IEnquiryControl;
 import Interface.IFlatBookingControl;
 import Interface.IOfficerRegistrationControl;
@@ -15,16 +17,20 @@ import Interface.IWithdrawalControl;
 public class OfficerUI extends BaseUserUI {
     private final HDBOfficer officer;
     private final IProjectControl projectControl;
-    private final IEnquiryControl enquiryControl;
+    private final IEnquiryControl enquiryControl; // Used for officer functions
+    private final IApplicantEnquiryControl applicantEnquiryControl; // Used for applicant functions
     private final IFlatBookingControl flatBookingControl;
     private final IOfficerRegistrationControl officerRegistrationControl;
     private final IReceiptGenerator receiptGenerator;
     private final IApplicantApplicationControl applicantApplicationControl;
     private final IWithdrawalControl withdrawalControl;
+    private final IApplicantProjectControl applicantProjectControl;
 
     public OfficerUI(HDBOfficer officer,
                      IProjectControl projectControl,
+                     IApplicantProjectControl applicantProjectControl,
                      IEnquiryControl enquiryControl,
+                     IApplicantEnquiryControl applicantEnquiryControl,
                      IFlatBookingControl flatBookingControl,
                      IOfficerRegistrationControl officerRegistrationControl,
                      IReceiptGenerator receiptGenerator,
@@ -33,7 +39,9 @@ public class OfficerUI extends BaseUserUI {
         super(officer);
         this.officer = officer;
         this.projectControl = projectControl;
+        this.applicantProjectControl = applicantProjectControl;
         this.enquiryControl = enquiryControl;
+        this.applicantEnquiryControl = applicantEnquiryControl;
         this.flatBookingControl = flatBookingControl;
         this.officerRegistrationControl = officerRegistrationControl;
         this.receiptGenerator = receiptGenerator;
@@ -86,18 +94,19 @@ public class OfficerUI extends BaseUserUI {
                     }
                 }
                 case 3 -> registerForProject();
-                case 4 -> officer.viewAllEnquiries(enquiryControl);
-                case 5 -> officer.replyToEnquiries(enquiryControl);
+                case 4 -> officer.viewAllEnquiries(enquiryControl); // Officer-only method
+                case 5 -> officer.replyToEnquiries(enquiryControl); // Officer-only method
                 case 6 -> officer.approveFlatBooking(officer, flatBookingControl);
                 case 7 -> officer.generateReceipts(receiptGenerator);
 
-                case 8 -> officer.viewProjectList(projectControl);
-                case 9 -> officer.createApplication(applicantApplicationControl, projectControl);
+                // Applicant functionality (use applicantEnquiryControl)
+                case 8 -> officer.viewProjectList(applicantProjectControl);
+                case 9 -> officer.createApplication(applicantApplicationControl, applicantProjectControl);
                 case 10 -> officer.viewApplication(applicantApplicationControl);
-                case 11 -> officer.submitEnquiry(enquiryControl, projectControl);
-                case 12 -> officer.viewEnquiry(enquiryControl);
-                case 13 -> officer.editEnquiry(enquiryControl, projectControl);
-                case 14 -> officer.deleteEnquiry(enquiryControl, projectControl);
+                case 11 -> officer.submitEnquiry(applicantEnquiryControl, applicantProjectControl);
+                case 12 -> officer.viewEnquiry(applicantEnquiryControl);
+                case 13 -> officer.editEnquiry(applicantEnquiryControl, applicantProjectControl);
+                case 14 -> officer.deleteEnquiry(applicantEnquiryControl, applicantProjectControl);
                 case 15 -> officer.withdrawApplication(withdrawalControl);
                 case 16 -> officer.displayWithdrawalRequest(withdrawalControl);
                 case 0 -> {

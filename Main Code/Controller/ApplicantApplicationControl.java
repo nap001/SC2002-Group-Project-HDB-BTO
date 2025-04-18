@@ -12,6 +12,7 @@ import ENUM.FlatType;
 import Entity.ApplicantApplication;
 import Entity.Project;
 import Interface.IApplicantApplicationControl;
+import Interface.IApplicantProjectControl;
 import Interface.IProjectControl;
 
 public class ApplicantApplicationControl implements IApplicantApplicationControl {
@@ -49,7 +50,7 @@ public class ApplicantApplicationControl implements IApplicantApplicationControl
     }
 
     @Override
-    public void processApplication(Applicant applicant, IProjectControl projectControl) {
+    public void processApplication(Applicant applicant, IApplicantProjectControl projectControl) {
         Scanner scanner = new Scanner(System.in);
 
         // Check if existing application is still active

@@ -84,7 +84,7 @@ public class Main {
                 boolean switchUser = managerUI.run(); // returns true if logout
                 if (!switchUser) break;
             } else if (user instanceof HDBOfficer officer) {
-                OfficerUI officerUI = new OfficerUI(officer, projectControl, enquiryControl, flatBookingControl, officerRegistrationControl, receiptGenerator, applicantApplicationControl, withdrawalControl);
+                OfficerUI officerUI = new OfficerUI(officer, projectControl, projectControl, enquiryControl, enquiryControl, flatBookingControl, officerRegistrationControl, receiptGenerator, applicantApplicationControl, withdrawalControl);
                 boolean switchUser = officerUI.run();
                 if (!switchUser) break;
             } else if (user instanceof Applicant applicant) {

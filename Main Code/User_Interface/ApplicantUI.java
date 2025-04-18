@@ -4,21 +4,21 @@ import java.util.Scanner;
 
 import Boundary.Applicant;
 import Interface.IApplicantApplicationControl;
-import Interface.IEnquiryControl;
-import Interface.IProjectControl;
+import Interface.IApplicantEnquiryControl;
+import Interface.IApplicantProjectControl;
 import Interface.IWithdrawalControl;
 
 public class ApplicantUI extends BaseUserUI {
     private final Applicant applicant;
-    private final IProjectControl projectControl;
+    private final IApplicantProjectControl projectControl;
     private final IApplicantApplicationControl applicationControl;
-    private final IEnquiryControl enquiryControl;
+    private final IApplicantEnquiryControl enquiryControl; // Changed from IEnquiryControl
     private final IWithdrawalControl withdrawalControl;
 
     public ApplicantUI(Applicant applicant,
-                       IProjectControl projectControl,
+                       IApplicantProjectControl projectControl,
                        IApplicantApplicationControl applicationControl,
-                       IEnquiryControl enquiryControl,
+                       IApplicantEnquiryControl enquiryControl, // Changed here
                        IWithdrawalControl withdrawalControl) {
         super(applicant);
         this.applicant = applicant;

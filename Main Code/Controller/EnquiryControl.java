@@ -12,10 +12,12 @@ import Boundary.User;
 import Database.EnquiryList;
 import Entity.Enquiry;
 import Entity.Project;
+import Interface.IApplicantEnquiryControl;
+import Interface.IApplicantProjectControl;
 import Interface.IEnquiryControl;
 import Interface.IProjectControl;
 
-public class EnquiryControl implements IEnquiryControl{
+public class EnquiryControl implements IEnquiryControl, IApplicantEnquiryControl {
     private EnquiryList enquiryList;
 
     // Constructor to initialize with an EnquiryList
@@ -66,7 +68,7 @@ public class EnquiryControl implements IEnquiryControl{
         }
     }
     // Method to submit an enquiry from the applicant
-    public void submitEnquiry(Applicant applicant, IProjectControl projectControl) {
+    public void submitEnquiry(Applicant applicant, IApplicantProjectControl projectControl) {
         Scanner scanner = new Scanner(System.in);
 
         // Ask user for project name
@@ -110,7 +112,7 @@ public class EnquiryControl implements IEnquiryControl{
                     e.getReply() == null ? "Not replied" : e.getReply());
         }
     }
-    public void editEnquiry(Applicant applicant, IProjectControl projectControl) {
+    public void editEnquiry(Applicant applicant, IApplicantProjectControl projectControl) {
         // Get all enquiries and filter based on applicant's name
         List<Enquiry> applicantEnquiries = enquiryList.getAllEnquiries().stream()
             .filter(e -> e.getSenderName().equals(applicant.getName()))  // Only enquiries belonging to the applicant
@@ -147,7 +149,7 @@ public class EnquiryControl implements IEnquiryControl{
         System.out.println("Enquiry updated successfully.");
     }
 
-    public void deleteEnquiry(Applicant applicant, IProjectControl projectControl) {
+    public void deleteEnquiry(Applicant applicant, IApplicantProjectControl projectControl) {
         // Get all enquiries and filter based on applicant's name
         List<Enquiry> applicantEnquiries = enquiryList.getAllEnquiries().stream()
             .filter(e -> e.getSenderName().equals(applicant.getName()))  // Only enquiries belonging to the applicant
@@ -240,7 +242,6 @@ public class EnquiryControl implements IEnquiryControl{
         selected.setReply(reply);
         System.out.println("Reply sent successfully.");
     }
-
 
 
 }

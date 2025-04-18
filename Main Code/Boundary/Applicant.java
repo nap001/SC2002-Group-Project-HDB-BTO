@@ -15,6 +15,8 @@ import Entity.Enquiry;
 import Entity.Project;
 import Entity.Withdrawal;
 import Interface.IApplicantApplicationControl;
+import Interface.IApplicantEnquiryControl;
+import Interface.IApplicantProjectControl;
 import Interface.IEnquiryControl;
 import Interface.IProjectControl;
 import Interface.IWithdrawalControl;
@@ -33,12 +35,12 @@ public class Applicant extends User implements Serializable{
         return "Applicant";
     }
 
-    public void viewProjectList(IProjectControl projectControl) {
+    public void viewProjectList(IApplicantProjectControl projectControl) {
         System.out.println("=== Project List ===");
         projectControl.viewVisibleProject();
     }
 
-    public void createApplication(IApplicantApplicationControl applicationControl, IProjectControl projectControl) {
+    public void createApplication(IApplicantApplicationControl applicationControl, IApplicantProjectControl projectControl) {
         applicationControl.processApplication(this, projectControl);
     }
     
@@ -75,19 +77,19 @@ public class Applicant extends User implements Serializable{
     }
     
     // Delegate enquiry-related methods to EnquiryControl class
-    public void submitEnquiry(IEnquiryControl enquiryControl, IProjectControl projectControl) {
+    public void submitEnquiry(IApplicantEnquiryControl enquiryControl, IApplicantProjectControl projectControl) {
         enquiryControl.submitEnquiry(this, projectControl);
     }
 
-    public void viewEnquiry(IEnquiryControl enquiryControl) {
+    public void viewEnquiry(IApplicantEnquiryControl enquiryControl) {
         enquiryControl.viewApplicantEnquiries(this);
     }
 
-    public void editEnquiry(IEnquiryControl enquiryControl, IProjectControl projectControl) {
+    public void editEnquiry(IApplicantEnquiryControl enquiryControl, IApplicantProjectControl projectControl) {
         enquiryControl.editEnquiry(this, projectControl);
     }
 
-    public void deleteEnquiry(IEnquiryControl enquiryControl, IProjectControl projectControl) {
+    public void deleteEnquiry(IApplicantEnquiryControl enquiryControl, IApplicantProjectControl projectControl) {
         enquiryControl.deleteEnquiry(this, projectControl);
     }
 
