@@ -11,8 +11,9 @@ import ENUM.FlatType;
 import Entity.ApplicantApplication;
 import Entity.Project;
 import Entity.Withdrawal;
+import Interface.IWithdrawalControl;
 
-public class WithdrawalControl {
+public class WithdrawalControl implements IWithdrawalControl{
 	private WithdrawalList withdrawalList;
 
 	public WithdrawalControl(WithdrawalList withdrawalList) {

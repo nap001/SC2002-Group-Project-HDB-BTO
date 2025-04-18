@@ -5,8 +5,9 @@ import Database.OfficerRegistrationList;
 import Entity.ApplicantApplication;
 import Entity.OfficerRegistration;
 import Entity.Project;
+import Interface.IOfficerRegistrationControl;
 
-public class OfficerRegistrationControl {
+public class OfficerRegistrationControl implements IOfficerRegistrationControl{
     private OfficerRegistrationList officerRegistrationDatabase;
 
     public OfficerRegistrationControl(OfficerRegistrationList officerRegistrationDatabase) {

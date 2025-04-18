@@ -8,8 +8,9 @@ import Boundary.HDBManager;
 import Database.ProjectList;
 import ENUM.FlatType;
 import Entity.Project;
+import Interface.IProjectControl;
 
-public class ProjectControl {
+public class ProjectControl implements IProjectControl{
     private ProjectList projectDatabase;
 
     public ProjectControl(ProjectList projectDatabase) {

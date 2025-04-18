@@ -6,9 +6,10 @@ import java.util.List;
 import Boundary.Applicant;
 import Database.FlatBookingList;
 import Entity.*;
+import Interface.IReportGenerator;
 import ENUM.FlatType;
 
-public class ReportGenerator {
+public class ReportGenerator implements IReportGenerator{
 	private FlatBookingList flatBookingList;
 	public ReportGenerator (FlatBookingList flatBookingList)
 	{

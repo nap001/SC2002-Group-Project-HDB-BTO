@@ -16,8 +16,9 @@ import ENUM.FlatType;
 import Entity.ApplicantApplication;
 import Entity.FlatBooking;
 import Entity.Project;
+import Interface.IFlatBookingControl;
 
-public class FlatBookingControl {
+public class FlatBookingControl implements IFlatBookingControl{
 	Scanner sc = new Scanner(System.in);
     private ProjectList projectDatabase;
     private ApplicantApplicationList applicationDatabase;

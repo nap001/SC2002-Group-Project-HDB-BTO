@@ -20,8 +20,9 @@ import Entity.FlatBooking;
 import Entity.OfficerRegistration;
 import Entity.Project;
 import Entity.Withdrawal;
+import Interface.IManagerApplicationControl;
 
-public class ManagerApplicationControl {
+public class ManagerApplicationControl implements IManagerApplicationControl{
     private ProjectList projectDatabase;
     private OfficerRegistrationList officerRegistrationDatabase;
     private ApplicantApplicationList applicantDatabase;
@@ -226,6 +227,7 @@ public class ManagerApplicationControl {
 
         return true;
     }
+
 
 
 }

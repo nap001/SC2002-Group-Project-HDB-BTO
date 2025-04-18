@@ -12,8 +12,9 @@ import Boundary.User;
 import Database.EnquiryList;
 import Entity.Enquiry;
 import Entity.Project;
+import Interface.IEnquiryControl;
 
-public class EnquiryControl {
+public class EnquiryControl implements IEnquiryControl{
     private EnquiryList enquiryList;
 
     // Constructor to initialize with an EnquiryList

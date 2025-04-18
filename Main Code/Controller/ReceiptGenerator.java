@@ -3,10 +3,11 @@ package Controller;
 import java.util.List;
 import Entity.FlatBooking;
 import Entity.Project;
+import Interface.IReceiptGenerator;
 import Boundary.Applicant;
 import Database.FlatBookingList;
 
-public class ReceiptGenerator {
+public class ReceiptGenerator implements IReceiptGenerator {
     private FlatBookingList flatBookingList;
 
     public ReceiptGenerator(Database.FlatBookingList flatBookingList) {

@@ -11,23 +11,27 @@ import ENUM.ApplicationStatus;
 import ENUM.FlatType;
 import Entity.ApplicantApplication;
 import Entity.Project;
+import Interface.IApplicantApplicationControl;
 
-public class ApplicantApplicationControl {
+public class ApplicantApplicationControl implements IApplicantApplicationControl {
     private ApplicantApplicationList applicationList;
 
     public ApplicantApplicationControl(ApplicantApplicationList applicationList) {
         this.applicationList = applicationList;
     }
 
+    @Override
     public void addApplication(ApplicantApplication application) {
         applicationList.addApplication(application);
     }
 
+    @Override
     public boolean hasApplication(String nric, String projectName) {
         return applicationList.getAllApplications().stream()
             .anyMatch(app -> app.getNric().equals(nric) && app.getProjectName().equals(projectName));
     }
     
+    @Override
     public void displayApplicationDetails(ApplicantApplication application) {
         if (application == null) {
             System.out.println("No application found.");
@@ -43,6 +47,7 @@ public class ApplicantApplicationControl {
         System.out.println("Application Status: " + application.getApplicationStatus());
     }
 
+    @Override
     public void processApplication(Applicant applicant, ProjectControl projectControl) {
         Scanner scanner = new Scanner(System.in);
 
@@ -153,7 +158,4 @@ public class ApplicantApplicationControl {
         applicant.setApplication(application);
         System.out.println("Your application for project '" + projectName + "' has been successfully submitted.");
     }
-
-
 }
-
