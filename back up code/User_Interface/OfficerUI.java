@@ -16,37 +16,37 @@ import Interface.IWithdrawalControl;
 
 public class OfficerUI extends BaseUserUI {
     private final HDBOfficer officer;
-    private final IProjectControl IProjectControl;
-    private final IEnquiryControl IEnquiryControl; // Used for officer functions
-    private final IApplicantEnquiryControl IApplicantEnquiryControl; // Used for applicant functions
-    private final IFlatBookingControl IFlatBookingControl;
-    private final IOfficerRegistrationControl IOfficerRegistrationControl;
-    private final IReceiptGenerator IReceiptGenerator;
-    private final IApplicantApplicationControl IApplicantApplicationControl;
-    private final IWithdrawalControl IWithdrawalControl;
-    private final IApplicantProjectControl IApplicantProjectControl;
+    private final IProjectControl projectControl;
+    private final IEnquiryControl enquiryControl; // Used for officer functions
+    private final IApplicantEnquiryControl applicantEnquiryControl; // Used for applicant functions
+    private final IFlatBookingControl flatBookingControl;
+    private final IOfficerRegistrationControl officerRegistrationControl;
+    private final IReceiptGenerator receiptGenerator;
+    private final IApplicantApplicationControl applicantApplicationControl;
+    private final IWithdrawalControl withdrawalControl;
+    private final IApplicantProjectControl applicantProjectControl;
 
     public OfficerUI(HDBOfficer officer,
-                     IProjectControl IProjectControl,
-                     IApplicantProjectControl IApplicantProjectControl,
-                     IEnquiryControl IEnquiryControl,
-                     IApplicantEnquiryControl IApplicantEnquiryControl,
-                     IFlatBookingControl IFlatBookingControl,
-                     IOfficerRegistrationControl IOfficerRegistrationControl,
-                     IReceiptGenerator IReceiptGenerator,
-                     IApplicantApplicationControl IApplicantApplicationControl,
-                     IWithdrawalControl IWithdrawalControl) {
+                     IProjectControl projectControl,
+                     IApplicantProjectControl applicantProjectControl,
+                     IEnquiryControl enquiryControl,
+                     IApplicantEnquiryControl applicantEnquiryControl,
+                     IFlatBookingControl flatBookingControl,
+                     IOfficerRegistrationControl officerRegistrationControl,
+                     IReceiptGenerator receiptGenerator,
+                     IApplicantApplicationControl applicantApplicationControl,
+                     IWithdrawalControl withdrawalControl) {
         super(officer);
         this.officer = officer;
-        this.IProjectControl = IProjectControl;
-        this.IApplicantProjectControl = IApplicantProjectControl;
-        this.IEnquiryControl = IEnquiryControl;
-        this.IApplicantEnquiryControl = IApplicantEnquiryControl;
-        this.IFlatBookingControl = IFlatBookingControl;
-        this.IOfficerRegistrationControl = IOfficerRegistrationControl;
-        this.IReceiptGenerator = IReceiptGenerator;
-        this.IApplicantApplicationControl = IApplicantApplicationControl;
-        this.IWithdrawalControl = IWithdrawalControl;
+        this.projectControl = projectControl;
+        this.applicantProjectControl = applicantProjectControl;
+        this.enquiryControl = enquiryControl;
+        this.applicantEnquiryControl = applicantEnquiryControl;
+        this.flatBookingControl = flatBookingControl;
+        this.officerRegistrationControl = officerRegistrationControl;
+        this.receiptGenerator = receiptGenerator;
+        this.applicantApplicationControl = applicantApplicationControl;
+        this.withdrawalControl = withdrawalControl;
     }
 
     public boolean run() {
@@ -84,7 +84,7 @@ public class OfficerUI extends BaseUserUI {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1 -> officer.viewAllProject(IProjectControl);
+                case 1 -> officer.viewAllProject(projectControl);
                 case 2 -> {
                     Project assigned = officer.getAssignedProject();
                     if (assigned != null) {
@@ -94,21 +94,21 @@ public class OfficerUI extends BaseUserUI {
                     }
                 }
                 case 3 -> registerForProject();
-                case 4 -> officer.viewAllEnquiries(IEnquiryControl); // Officer-only method
-                case 5 -> officer.replyToEnquiries(IEnquiryControl); // Officer-only method
-                case 6 -> officer.approveFlatBooking(officer, IFlatBookingControl);
-                case 7 -> officer.generateReceipts(IReceiptGenerator);
+                case 4 -> officer.viewAllEnquiries(enquiryControl); // Officer-only method
+                case 5 -> officer.replyToEnquiries(enquiryControl); // Officer-only method
+                case 6 -> officer.approveFlatBooking(officer, flatBookingControl);
+                case 7 -> officer.generateReceipts(receiptGenerator);
 
-                // Applicant functionality (use IApplicantEnquiryControl)
-                case 8 -> officer.viewProjectList(IApplicantProjectControl);
-                case 9 -> officer.createApplication(IApplicantApplicationControl, IApplicantProjectControl);
-                case 10 -> officer.viewApplication(IApplicantApplicationControl);
-                case 11 -> officer.submitEnquiry(IApplicantEnquiryControl, IApplicantProjectControl);
-                case 12 -> officer.viewEnquiry(IApplicantEnquiryControl);
-                case 13 -> officer.editEnquiry(IApplicantEnquiryControl, IApplicantProjectControl);
-                case 14 -> officer.deleteEnquiry(IApplicantEnquiryControl, IApplicantProjectControl);
-                case 15 -> officer.withdrawApplication(IWithdrawalControl);
-                case 16 -> officer.displayWithdrawalRequest(IWithdrawalControl);
+                // Applicant functionality (use applicantEnquiryControl)
+                case 8 -> officer.viewProjectList(applicantProjectControl);
+                case 9 -> officer.createApplication(applicantApplicationControl, applicantProjectControl);
+                case 10 -> officer.viewApplication(applicantApplicationControl);
+                case 11 -> officer.submitEnquiry(applicantEnquiryControl, applicantProjectControl);
+                case 12 -> officer.viewEnquiry(applicantEnquiryControl);
+                case 13 -> officer.editEnquiry(applicantEnquiryControl, applicantProjectControl);
+                case 14 -> officer.deleteEnquiry(applicantEnquiryControl, applicantProjectControl);
+                case 15 -> officer.withdrawApplication(withdrawalControl);
+                case 16 -> officer.displayWithdrawalRequest(withdrawalControl);
                 case 0 -> {
                     System.out.println("Logging out...");
                     return true;
@@ -123,14 +123,14 @@ public class OfficerUI extends BaseUserUI {
     private void registerForProject() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n=== Register for a Project ===");
-        IProjectControl.viewAllProject();
+        projectControl.viewAllProject();
 
         System.out.print("Enter the name of the project to register for: ");
         String projectName = scanner.nextLine();
 
-        Project selectedProject = IProjectControl.getProject(projectName);
+        Project selectedProject = projectControl.getProject(projectName);
         if (selectedProject != null) {
-            officer.registerforProject(selectedProject, IOfficerRegistrationControl);
+            officer.registerforProject(selectedProject, officerRegistrationControl);
         } else {
             System.out.println("Project not found.");
         }

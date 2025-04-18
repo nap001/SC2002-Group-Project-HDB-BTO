@@ -11,22 +11,22 @@ import ENUM.FlatType;
 
 public class ManagerUI extends BaseUserUI {
     private final HDBManager manager;
-    private final IProjectControl iProjectControl;
-    private final IManagerApplicationControl iApplicationControl;
-    private final IEnquiryControl iEnquiryControl;
-    private final IReportGenerator iReportGenerator;
+    private final IProjectControl projectControl;
+    private final IManagerApplicationControl applicationControl;
+    private final IEnquiryControl enquiryControl;
+    private final IReportGenerator reportGenerator;
 
     public ManagerUI(HDBManager manager,
-                     IProjectControl iProjectControl,
-                     IManagerApplicationControl iApplicationControl,
-                     IEnquiryControl iEnquiryControl,
-                     IReportGenerator iReportGenerator) {
+                     IProjectControl projectControl,
+                     IManagerApplicationControl applicationControl,
+                     IEnquiryControl enquiryControl,
+                     IReportGenerator reportGenerator) {
         super(manager);
         this.manager = manager;
-        this.iProjectControl = iProjectControl;
-        this.iApplicationControl = iApplicationControl;
-        this.iEnquiryControl = iEnquiryControl;
-        this.iReportGenerator = iReportGenerator;
+        this.projectControl = projectControl;
+        this.applicationControl = applicationControl;
+        this.enquiryControl = enquiryControl;
+        this.reportGenerator = reportGenerator;
     }
 
     public boolean run() {
@@ -56,19 +56,19 @@ public class ManagerUI extends BaseUserUI {
             scanner.nextLine(); // consume newline
 
             switch (choice) {
-                case 1 -> manager.viewAllProject(iProjectControl);
-                case 2 -> manager.viewMyProjects(iProjectControl);
+                case 1 -> manager.viewAllProject(projectControl);
+                case 2 -> manager.viewMyProjects(projectControl);
                 case 3 -> createProject(scanner);
                 case 4 -> removeProject(scanner);
                 case 5 -> editProject(scanner);
                 case 6 -> toggleProjectVisibility(scanner);
-                case 7 -> manager.viewAllEnquiries(iEnquiryControl);
-                case 8 -> manager.replyToEnquiries(iEnquiryControl);
+                case 7 -> manager.viewAllEnquiries(enquiryControl);
+                case 8 -> manager.replyToEnquiries(enquiryControl);
                 case 9 -> manageOfficerApplications(scanner);
-                case 10 -> manager.approveApplicantApplications(iApplicationControl, iProjectControl);
-                case 11 -> manager.approveApplicantWithdrawals(iApplicationControl);
+                case 10 -> manager.approveApplicantApplications(applicationControl, projectControl);
+                case 11 -> manager.approveApplicantWithdrawals(applicationControl);
                 case 12 -> generateReport(scanner);
-                case 13 -> manager.displayGeneratedReport(iReportGenerator);
+                case 13 -> manager.displayGeneratedReport(reportGenerator);
                 case 0 -> {
                     System.out.println("Logging out...");
                     return true;
@@ -120,7 +120,7 @@ public class ManagerUI extends BaseUserUI {
             }
         }
 
-        manager.editProject(iProjectControl, projectName, editChoice, newValue);
+        manager.editProject(projectControl, projectName, editChoice, newValue);
     }
 
     private void generateReport(Scanner scanner) {
@@ -150,7 +150,7 @@ public class ManagerUI extends BaseUserUI {
             }
         }
 
-        manager.generateApplicantReport(iReportGenerator, filterType, filterValue);
+        manager.generateApplicantReport(reportGenerator, filterType, filterValue);
     }
 
     private void createProject(Scanner scanner) {
@@ -182,14 +182,14 @@ public class ManagerUI extends BaseUserUI {
             priceMap.put(flatType, Integer.parseInt(scanner.nextLine()));
         }
 
-        manager.createProject(iProjectControl, projectName, neighbourhood, openDate,
+        manager.createProject(projectControl, projectName, neighbourhood, openDate,
                 closeDate, visible, officerSlots, unitCountMap, priceMap);
     }
 
     private void removeProject(Scanner scanner) {
         System.out.print("Enter project name to remove: ");
         String projectName = scanner.nextLine();
-        manager.removeProject(iProjectControl, projectName);
+        manager.removeProject(projectControl, projectName);
     }
 
     private void toggleProjectVisibility(Scanner scanner) {
@@ -199,13 +199,13 @@ public class ManagerUI extends BaseUserUI {
         System.out.print("Enter new visibility (true/false): ");
         boolean isVisible = Boolean.parseBoolean(scanner.nextLine());
 
-        manager.toggleProjectVisibility(iProjectControl, projectName, isVisible);
+        manager.toggleProjectVisibility(projectControl, projectName, isVisible);
     }
 
     private void manageOfficerApplications(Scanner scanner) {
         System.out.print("Enter project name to manage officer applications: ");
         String projectName = scanner.nextLine();
 
-        manager.manageOfficerApplication(iApplicationControl, projectName);
+        manager.manageOfficerApplication(applicationControl, projectName);
     }
 }

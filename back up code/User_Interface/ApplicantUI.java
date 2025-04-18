@@ -10,22 +10,22 @@ import Interface.IWithdrawalControl;
 
 public class ApplicantUI extends BaseUserUI {
     private final Applicant applicant;
-    private final IApplicantProjectControl iProjectControl;
-    private final IApplicantApplicationControl iApplicationControl;
-    private final IApplicantEnquiryControl iEnquiryControl;
-    private final IWithdrawalControl iWithdrawalControl;
+    private final IApplicantProjectControl projectControl;
+    private final IApplicantApplicationControl applicationControl;
+    private final IApplicantEnquiryControl enquiryControl; // Changed from IEnquiryControl
+    private final IWithdrawalControl withdrawalControl;
 
     public ApplicantUI(Applicant applicant,
-                       IApplicantProjectControl iProjectControl,
-                       IApplicantApplicationControl iApplicationControl,
-                       IApplicantEnquiryControl iEnquiryControl,
-                       IWithdrawalControl iWithdrawalControl) {
+                       IApplicantProjectControl projectControl,
+                       IApplicantApplicationControl applicationControl,
+                       IApplicantEnquiryControl enquiryControl, // Changed here
+                       IWithdrawalControl withdrawalControl) {
         super(applicant);
         this.applicant = applicant;
-        this.iProjectControl = iProjectControl;
-        this.iApplicationControl = iApplicationControl;
-        this.iEnquiryControl = iEnquiryControl;
-        this.iWithdrawalControl = iWithdrawalControl;
+        this.projectControl = projectControl;
+        this.applicationControl = applicationControl;
+        this.enquiryControl = enquiryControl;
+        this.withdrawalControl = withdrawalControl;
     }
 
     public boolean run() {
@@ -51,15 +51,15 @@ public class ApplicantUI extends BaseUserUI {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1 -> applicant.viewProjectList(iProjectControl);
-                case 2 -> applicant.createApplication(iApplicationControl, iProjectControl);
-                case 3 -> applicant.viewApplication(iApplicationControl);
-                case 4 -> applicant.submitEnquiry(iEnquiryControl, iProjectControl);
-                case 5 -> applicant.viewEnquiry(iEnquiryControl);
-                case 6 -> applicant.editEnquiry(iEnquiryControl, iProjectControl);
-                case 7 -> applicant.deleteEnquiry(iEnquiryControl, iProjectControl);
-                case 8 -> applicant.withdrawApplication(iWithdrawalControl);
-                case 9 -> applicant.displayWithdrawalRequest(iWithdrawalControl);
+                case 1 -> applicant.viewProjectList(projectControl);
+                case 2 -> applicant.createApplication(applicationControl, projectControl);
+                case 3 -> applicant.viewApplication(applicationControl);
+                case 4 -> applicant.submitEnquiry(enquiryControl, projectControl);
+                case 5 -> applicant.viewEnquiry(enquiryControl);
+                case 6 -> applicant.editEnquiry(enquiryControl, projectControl);
+                case 7 -> applicant.deleteEnquiry(enquiryControl, projectControl);
+                case 8 -> applicant.withdrawApplication(withdrawalControl);
+                case 9 -> applicant.displayWithdrawalRequest(withdrawalControl);
                 case 0 -> {
                     System.out.println("Logging out...");
                     return true;
