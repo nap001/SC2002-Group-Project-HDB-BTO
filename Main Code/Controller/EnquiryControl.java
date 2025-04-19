@@ -188,11 +188,11 @@ public class EnquiryControl implements IEnquiryControl, IApplicantEnquiryControl
     }
 
     // Method to allow a user (manager/officer) to reply to enquiries related to their project
-    public void replyToEnquiries(User user) {
+    public void replyToEnquiries(User user, IProjectControl projectControl) {
         Project relevantProject = null;
 
         if (user instanceof HDBManager manager) {
-            relevantProject = manager.getCurrentlyManagedProject();
+            relevantProject = manager.getCurrentlyManagedProject(projectControl);
             if (relevantProject == null) {
                 System.out.println("You are not managing any project.");
                 return;

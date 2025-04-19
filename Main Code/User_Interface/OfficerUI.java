@@ -95,7 +95,7 @@ public class OfficerUI extends BaseUserUI {
                 }
                 case 3 -> registerForProject();
                 case 4 -> officer.viewAllEnquiries(IEnquiryControl); // Officer-only method
-                case 5 -> officer.replyToEnquiries(IEnquiryControl); // Officer-only method
+                case 5 -> officer.replyToEnquiries(IEnquiryControl, IProjectControl); // Officer-only method
                 case 6 -> officer.approveFlatBooking(officer, IFlatBookingControl);
                 case 7 -> officer.generateReceipts(IReceiptGenerator);
 

@@ -21,6 +21,6 @@ public interface IProjectControl {
     Project getProject(String projectName);
     boolean projectExists(String projectName);
     void viewVisibleProject();
-    List<Project> filterProjectsByManager(HDBManager manager);
+    Project filterProjectsByManager(HDBManager manager);
     List<Project> getVisibleProjects();
 }

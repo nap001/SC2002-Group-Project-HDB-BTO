@@ -35,14 +35,13 @@ public class ProjectList implements Serializable{
     }
 
     // Overloaded method: Get projects by manager
-    public List<Project> getProjects(HDBManager manager) {
-        List<Project> managerProjects = new ArrayList<>();
+    public Project getProjects(HDBManager manager) {
         for (Project project : projects) {
             if (project.getHdbManager().equals(manager)) {
-                managerProjects.add(project);
+                return project;
             }
         }
-        return Collections.unmodifiableList(managerProjects);
+        return null;
     }
     
  // Overloaded method: Get project by name

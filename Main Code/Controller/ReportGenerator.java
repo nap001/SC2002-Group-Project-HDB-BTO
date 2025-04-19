@@ -15,52 +15,72 @@ public class ReportGenerator implements IReportGenerator{
 	{
 		this.flatBookingList = flatBookingList;
 	}
+	@Override
+	public Report generateApplicantReport(Project currentlyManagedProject, String filterType, Object filterValue) {
+	    List<FlatBooking> relevantBookings = new ArrayList<>();
 
-    public Report generateApplicantReport(Project currentlyManagedProject, String filterType, Object filterValue) {
-        List<FlatBooking> relevantBookings = new ArrayList<>();
+	    for (FlatBooking booking : flatBookingList.getAllBookings()) {
+	        // Filter only bookings for the current project
+	        if (!booking.getProject().equals(currentlyManagedProject)) continue;
 
-        for (FlatBooking booking : flatBookingList.getAllBookings()) {
-            // Filter only bookings for the current project
-            if (!booking.getProject().equals(currentlyManagedProject)) continue;
+	        Applicant applicant = booking.getApplicant();
 
-            Applicant applicant = booking.getApplicant();
+	        boolean matchesFilter = true;
 
-            // Apply filter
-            if ("maritalStatus".equalsIgnoreCase(filterType)) {
-                if (!applicant.getMaritalStatus().equalsIgnoreCase((String) filterValue)) {
-                    continue;
-                }
-            } else if ("flatType".equalsIgnoreCase(filterType)) {
-                if (booking.getFlatType() != (FlatType) filterValue) {
-                    continue;
-                }
-            } else if ("age".equalsIgnoreCase(filterType)) {
-                if (applicant.getAge() != (int) filterValue) {
-                    continue;
-                }
-            }
+	        switch (filterType.toLowerCase()) {
+	            case "maritalstatus":
+	                if (filterValue instanceof String status) {
+	                    matchesFilter = applicant.getMaritalStatus().equalsIgnoreCase(status);
+	                } else {
+	                    matchesFilter = false;
+	                }
+	                break;
 
-            relevantBookings.add(booking);
-        }
+	            case "flattype":
+	                if (filterValue instanceof FlatType type) {
+	                    matchesFilter = booking.getFlatType().equals(type);
+	                } else {
+	                    matchesFilter = false;
+	                }
+	                break;
 
-        // Create report object from filtered list
-        Report report = new Report("Applicant Flat Booking Report");
+	            case "age":
+	                if (filterValue instanceof Integer age) {
+	                    matchesFilter = applicant.getAge() == age;
+	                } else {
+	                    matchesFilter = false;
+	                }
+	                break;
 
-        for (FlatBooking booking : relevantBookings) {
-            Applicant applicant = booking.getApplicant();
-            String reportLine = String.format(
-                    "Applicant: %s | Age: %d | Marital Status: %s | Flat Type: %s | Project: %s",
-                    applicant.getName(),
-                    applicant.getAge(),
-                    applicant.getMaritalStatus(),
-                    booking.getFlatType(),
-                    booking.getProject().getProjectName()
-            );
-            report.addLine(reportLine);
-        }
+	            default:
+	                matchesFilter = true; // If no valid filter type is provided, accept all
+	                break;
+	        }
 
-        return report;
-    }
+	        if (matchesFilter) {
+	            relevantBookings.add(booking);
+	        }
+	    }
+
+	    // Create report object from filtered list
+	    Report report = new Report("Applicant Flat Booking Report");
+
+	    for (FlatBooking booking : relevantBookings) {
+	        Applicant applicant = booking.getApplicant();
+	        String reportLine = String.format(
+	                "Applicant: %s | Age: %d | Marital Status: %s | Flat Type: %s | Project: %s",
+	                applicant.getName(),
+	                applicant.getAge(),
+	                applicant.getMaritalStatus(),
+	                booking.getFlatType(),
+	                booking.getProject().getProjectName()
+	        );
+	        report.addLine(reportLine);
+	    }
+
+	    return report;
+	}
+
 
 	public void displayReport(Report generatedReport) {
 		generatedReport.printReport();

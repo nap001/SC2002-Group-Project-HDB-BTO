@@ -78,8 +78,8 @@ public class HDBOfficer extends Applicant implements ProjectView,EnquiryViewRepl
 
 
     @Override
-    public void replyToEnquiries(IEnquiryControl enquiryControl) {
-        enquiryControl.replyToEnquiries(this); 
+    public void replyToEnquiries(IEnquiryControl enquiryControl, IProjectControl projectcontrol) {
+        enquiryControl.replyToEnquiries(this, projectcontrol); 
     }
 
     @Override

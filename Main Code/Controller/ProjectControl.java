@@ -52,7 +52,6 @@ public class ProjectControl implements IProjectControl, IApplicantProjectControl
 		
 		Project assignedProject = projectDatabase.getProjects(projectName);
 		if (assignedProject != null && isProjectActive(assignedProject)) {
-		manager.setCurrentlyManagedProject(assignedProject);
 		System.out.println("You are now managing the project: " + assignedProject.getProjectName());
 		} else {
 		System.out.println("Failed to assign the project or the project is not active.");
@@ -120,7 +119,7 @@ public class ProjectControl implements IProjectControl, IApplicantProjectControl
         return projectDatabase.getProjects(projectName);
     }
 
-    public List<Project> filterProjectsByManager(HDBManager manager) {
+    public Project filterProjectsByManager(HDBManager manager) {
         return projectDatabase.getProjects(manager);
     }
 

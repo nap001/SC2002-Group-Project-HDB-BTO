@@ -40,6 +40,7 @@ public class Main {
         if (flatBookingList == null) flatBookingList = new FlatBookingList();
         if (withdrawalList == null) withdrawalList = new WithdrawalList();
 
+
         // === Sample Users (in place of a real DB or CSV file) ===
         HDBManager manager1 = new HDBManager("S1234567A", "pass123", 35, "Single", "Manager John");
         HDBOfficer officer1 = new HDBOfficer("S9876543B", "pass456", 30, "Married", "Officer Jane");

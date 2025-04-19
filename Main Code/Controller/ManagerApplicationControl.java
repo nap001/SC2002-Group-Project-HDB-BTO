@@ -50,9 +50,10 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
         return applicantDatabase.getAllApplications();
     }
 
-    public boolean manageOfficerRegistration(HDBManager manager, String projectName) {
-        // Ensure the manager is managing this project
-        if (!manager.isManagingProject(projectName)) {
+    public boolean manageOfficerRegistration(HDBManager manager, String projectName, IProjectControl projectControl) {
+        Project managedProject = manager.getCurrentlyManagedProject(projectControl);
+
+        if (managedProject == null || !managedProject.getProjectName().equals(projectName)) {
             System.out.println("You are not authorized to approve registrations for this project.");
             return false;
         }
@@ -139,11 +140,11 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
 
         // Filter applications for the project that the manager is handling
         List<ApplicantApplication> projectApplications = allApplications.stream()
-                .filter(app -> app.getProjectName().equals(manager.getCurrentlyManagedProject().getProjectName()))
+                .filter(app -> app.getProjectName().equals(manager.getCurrentlyManagedProject(projectControl).getProjectName()))
                 .collect(Collectors.toList());
 
         // Check if the manager is authorized to approve applications for this project
-        Project project = manager.getCurrentlyManagedProject();
+        Project project = manager.getCurrentlyManagedProject(projectControl);
         if (!manager.equals(project.getHdbManager())) {
             System.out.println("You are not authorized to approve applications for this project.");
             return false;
@@ -183,8 +184,8 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
         return true;
     }
 
-    public boolean approveWithdrawals(HDBManager manager) {
-        Project project = manager.getCurrentlyManagedProject();
+    public boolean approveWithdrawals(HDBManager manager,  IProjectControl projectControl) {
+        Project project = manager.getCurrentlyManagedProject(projectControl);
         if (project == null || !manager.equals(project.getHdbManager())) {
             System.out.println("You are not authorized to approve withdrawals for this project.");
             return false;

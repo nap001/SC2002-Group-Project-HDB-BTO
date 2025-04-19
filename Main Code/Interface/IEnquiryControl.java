@@ -30,5 +30,5 @@ public interface IEnquiryControl {
     void deleteEnquiry(Applicant applicant, IApplicantProjectControl projectControl);
 
     // Method to allow a user (manager/officer) to reply to enquiries related to their project
-    void replyToEnquiries(User user);
+    void replyToEnquiries(User use, IProjectControl projectControl);
 }

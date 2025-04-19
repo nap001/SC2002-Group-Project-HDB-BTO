@@ -20,112 +20,125 @@ import Interface.IProjectControl;
 import Interface.IReportGenerator;
 import Interface.ProjectView;
 
-public class HDBManager extends User implements ProjectView, EnquiryViewReply, Serializable{
-    private Project currentlyManagedProject;
+public class HDBManager extends User implements ProjectView, EnquiryViewReply, Serializable {
     private Report generatedReport;
-    private static final long serialVersionUID = 1L;  // Add serialVersionUID for version control
+    private static final long serialVersionUID = 1L;
 
     public Report getGeneratedReport() {
-		return generatedReport;
-	}
+        return generatedReport;
+    }
 
-	public void setGeneratedReport(Report generatedReport) {
-		this.generatedReport = generatedReport;
-	}
+    public void setGeneratedReport(Report generatedReport) {
+        this.generatedReport = generatedReport;
+    }
 
-	@Override
+    @Override
     public String getRole() {
         return "Manager";
     }
 
     public HDBManager(String NRIC, String password, int age, String maritalStatus, String name) {
         super(NRIC, password, age, maritalStatus, name);
-        this.currentlyManagedProject = null;
     }
-   //Project Management//
+
+    // Project Management
     public void createProject(IProjectControl projectControl, String projectName, String neighbourhood,
-            LocalDate applicationOpenDate, LocalDate applicationCloseDate,
-            boolean visibility, int officerSlots,
-            Map<FlatType, Integer> unitCountMap,
-            Map<FlatType, Integer> priceInput) {
-        if (currentlyManagedProject != null) {
+                              LocalDate applicationOpenDate, LocalDate applicationCloseDate,
+                              boolean visibility, int officerSlots,
+                              Map<FlatType, Integer> unitCountMap,
+                              Map<FlatType, Integer> priceInput) {
+        if (getCurrentlyManagedProject(projectControl) != null) {
             System.out.println("Cannot create a new project. You are already managing a project.");
             return;
         }
-        projectControl.createProject(
-            this, projectName, neighbourhood, applicationOpenDate,
-            applicationCloseDate, visibility, officerSlots, unitCountMap, priceInput);
+        projectControl.createProject(this, projectName, neighbourhood, applicationOpenDate,
+                applicationCloseDate, visibility, officerSlots, unitCountMap, priceInput);
     }
 
     public void removeProject(IProjectControl projectControl, String projectName) {
-        if (isManagingProject(projectName)) {
+        if (isManagingProject(projectControl, projectName)) {
             projectControl.removeProject(this, projectName);
-            currentlyManagedProject = null;
         } else {
             System.out.println("You are not managing this project.");
         }
     }
-    
+
     public void editProject(IProjectControl projectControl, String projectName, int choice, Object newValue) {
         projectControl.editProject(this, projectName, choice, newValue);
     }
+
     
     public void toggleProjectVisibility(IProjectControl projectControl, String projectName, boolean isVisible) {
-        if (isManagingProject(projectName)) {
-            projectControl.toggleProjectVisibility(this, projectName, isVisible);
-        } else {
-            System.out.println("You are not managing this project.");
+        Project project = getCurrentlyManagedProject(projectControl);
+        if (project == null) {
+            System.out.println("You are not managing any project.");
+            return;
         }
+
+        if (!project.getProjectName().equals(projectName)) {
+            System.out.println("You are not managing the specified project.");
+            return;
+        }
+
+        projectControl.toggleProjectVisibility(this, projectName, isVisible);
     }
+
 
     @Override
     public void viewAllProject(IProjectControl projectControl) {
         projectControl.viewAllProject();
     }
-    
+
     public void viewMyProjects(IProjectControl projectControl) {
-        if (this.getCurrentlyManagedProject() == null) {
+        Project managedProject = getCurrentlyManagedProject(projectControl);
+        if (managedProject == null) {
             System.out.println("You have not created any projects.");
         } else {
-        	this.getCurrentlyManagedProject().displayProjectDetails();
-            }
+            managedProject.displayProjectDetails();
         }
-    
-    
-    // Officer and Applicant Applications management//
+    }
 
-    public boolean manageOfficerApplication(IManagerApplicationControl applicationControl, String projectName) {
-        if (isManagingProject(projectName)) {
-            return applicationControl.manageOfficerRegistration(this, projectName);
+    // Officer and Applicant Applications management
+    public boolean manageOfficerApplication(IManagerApplicationControl applicationControl, IProjectControl projectControl, String projectName) {
+        if (isManagingProject(projectControl, projectName)) {
+            return applicationControl.manageOfficerRegistration(this, projectName, projectControl);
         }
         System.out.println("You are not managing this project.");
         return false;
     }
-    
-    public void approveApplicantApplications(IManagerApplicationControl applicationControl, IProjectControl projectControl) {
-        boolean success = applicationControl.approveApplicantApplication(this, projectControl);
 
+    public void approveApplicantApplications(IManagerApplicationControl applicationControl, IProjectControl projectControl) {
+        if (getCurrentlyManagedProject(projectControl) == null) {
+            System.out.println("You are not managing any project.");
+            return;
+        }
+
+        boolean success = applicationControl.approveApplicantApplication(this, projectControl);
         if (success) {
             System.out.println("Application approvals processed successfully.");
         } else {
             System.out.println("Application approval process failed.");
         }
     }
-    
-    public void approveApplicantWithdrawals(IManagerApplicationControl applicationControl) {
-        boolean success = applicationControl.approveWithdrawals(this);
 
+    public void approveApplicantWithdrawals(IManagerApplicationControl applicationControl, IProjectControl projectControl) {
+        if (getCurrentlyManagedProject(projectControl) == null) {
+            System.out.println("You are not managing any project.");
+            return;
+        }
+
+        boolean success = applicationControl.approveWithdrawals(this, projectControl);
         if (success) {
             System.out.println("Withdrawal approvals processed successfully.");
         } else {
             System.out.println("Withdrawal approval process failed.");
         }
     }
-    
-    // Enquiry Management//
+
+    // Enquiry Management
     @Override
-    public void replyToEnquiries(IEnquiryControl enquiryControl) {
-        enquiryControl.replyToEnquiries(this); // Uses the current HDBManager object
+    public void replyToEnquiries(IEnquiryControl enquiryControl,  IProjectControl projectControl) {
+        enquiryControl.replyToEnquiries(this, projectControl);
     }
 
     @Override
@@ -133,45 +146,48 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
         enquiryControl.viewAllEnquiries();
     }
 
-    //Report Management//
-    public void generateApplicantReport(IReportGenerator reportGenerator, String filterType, Object filterValue) {
-        if (currentlyManagedProject == null) {
+    // Report Management
+    public void generateApplicantReport(IReportGenerator reportGenerator, IProjectControl projectControl, String filterType, Object filterValue) {
+        Project project = getCurrentlyManagedProject(projectControl);
+        if (project == null) {
             System.out.println("You are not managing any project. Please select a project first.");
             return;
         }
-        this.setGeneratedReport(reportGenerator.generateApplicantReport(currentlyManagedProject, filterType, filterValue));
+        this.setGeneratedReport(reportGenerator.generateApplicantReport(project, filterType, filterValue));
     }
+
     public void displayGeneratedReport(IReportGenerator reportGenerator) {
-    	reportGenerator.displayReport(generatedReport);
+        reportGenerator.displayReport(generatedReport);
     }
 
-    
-    //Owning Project checkings//
-    public boolean isManagingProject(String projectName) {
-        return currentlyManagedProject != null && currentlyManagedProject.getProjectName().equals(projectName);
+    // Owning Project checkings
+    public boolean isManagingProject(IProjectControl projectControl, String projectName) {
+        Project project = getCurrentlyManagedProject(projectControl);
+        return project != null && project.getProjectName().equals(projectName);
     }
 
-    public boolean isProjectActive(Project project) {
+    public boolean isProjectActive(IProjectControl projectControl) {
+        Project project = getCurrentlyManagedProject(projectControl);
+        if (project == null) return false;
+
         LocalDate currentDate = LocalDate.now();
         return !currentDate.isAfter(project.getApplicationCloseDate())
                 && !currentDate.isBefore(project.getApplicationOpenDate());
     }
 
-    public Project getCurrentlyManagedProject() {
-        return currentlyManagedProject;
+    public Project getCurrentlyManagedProject(IProjectControl projectControl) {
+        return projectControl.filterProjectsByManager(this);
     }
 
-    public void setCurrentlyManagedProject(Project project) {
-        this.currentlyManagedProject = project;
-    }
-
-    public boolean stopManagingProject() {
-        if (currentlyManagedProject != null) {
-            System.out.println("You are no longer managing the project: " + currentlyManagedProject.getProjectName());
-            currentlyManagedProject = null;
+    public boolean stopManagingProject(IProjectControl projectControl) {
+        Project project = getCurrentlyManagedProject(projectControl);
+        if (project != null) {
+            System.out.println("You are no longer managing the project: " + project.getProjectName());
             return true;
         }
         System.out.println("You are not managing any project.");
         return false;
     }
+
+
 }

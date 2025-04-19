@@ -63,10 +63,10 @@ public class ManagerUI extends BaseUserUI {
                 case 5 -> editProject(scanner);
                 case 6 -> toggleProjectVisibility(scanner);
                 case 7 -> manager.viewAllEnquiries(iEnquiryControl);
-                case 8 -> manager.replyToEnquiries(iEnquiryControl);
+                case 8 -> manager.replyToEnquiries(iEnquiryControl, iProjectControl);
                 case 9 -> manageOfficerApplications(scanner);
                 case 10 -> manager.approveApplicantApplications(iApplicationControl, iProjectControl);
-                case 11 -> manager.approveApplicantWithdrawals(iApplicationControl);
+                case 11 -> manager.approveApplicantWithdrawals(iApplicationControl, iProjectControl);
                 case 12 -> generateReport(scanner);
                 case 13 -> manager.displayGeneratedReport(iReportGenerator);
                 case 0 -> {
@@ -127,22 +127,46 @@ public class ManagerUI extends BaseUserUI {
         System.out.println("Generate report by:");
         System.out.println("1. Marital Status");
         System.out.println("2. Age");
+        System.out.println("3. Flat Type");
         System.out.print("Enter your choice: ");
-        int reportChoice = Integer.parseInt(scanner.nextLine());
+
+        int reportChoice;
+        try {
+            reportChoice = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            return;
+        }
 
         String filterType = null;
         Object filterValue = null;
 
         switch (reportChoice) {
             case 1 -> {
-                filterType = "marital";
+                filterType = "maritalstatus";
                 System.out.print("Enter marital status to filter (e.g. Single, Married): ");
                 filterValue = scanner.nextLine();
             }
             case 2 -> {
                 filterType = "age";
-                System.out.print("Enter minimum age to filter: ");
-                filterValue = Integer.parseInt(scanner.nextLine());
+                System.out.print("Enter exact age to filter: ");
+                try {
+                    filterValue = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid age. Please enter a number.");
+                    return;
+                }
+            }
+            case 3 -> {
+                filterType = "flattype";
+                System.out.print("Enter flat type to filter (e.g. 2-Room, 3-Room): ");
+                String input = scanner.nextLine();
+                try {
+                    filterValue = FlatType.fromDisplayName(input);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid flat type. Please enter exactly '2-Room' or '3-Room'.");
+                    return;
+                }
             }
             default -> {
                 System.out.println("Invalid choice.");
@@ -150,7 +174,9 @@ public class ManagerUI extends BaseUserUI {
             }
         }
 
-        manager.generateApplicantReport(iReportGenerator, filterType, filterValue);
+        // Generate and display the report
+        manager.generateApplicantReport(iReportGenerator, iProjectControl, filterType, filterValue);
+        manager.displayGeneratedReport(iReportGenerator);
     }
 
     private void createProject(Scanner scanner) {
@@ -206,6 +232,6 @@ public class ManagerUI extends BaseUserUI {
         System.out.print("Enter project name to manage officer applications: ");
         String projectName = scanner.nextLine();
 
-        manager.manageOfficerApplication(iApplicationControl, projectName);
+        manager.manageOfficerApplication(iApplicationControl, iProjectControl, projectName);
     }
 }
