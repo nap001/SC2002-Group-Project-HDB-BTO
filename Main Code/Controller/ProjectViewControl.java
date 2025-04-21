@@ -2,8 +2,8 @@ package Controller;
 
 import java.util.List;
 
-import Boundary.HDBOfficer;
 import Database.ProjectList;
+import Entity.HDBOfficer;
 import Entity.Project;
 import Interface.IProjectViewControl;
 

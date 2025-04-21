@@ -4,12 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-import Boundary.Applicant;
-import Boundary.HDBOfficer;
 import Database.ApplicantApplicationList;
 import ENUM.ApplicationStatus;
 import ENUM.FlatType;
+import Entity.Applicant;
 import Entity.ApplicantApplication;
+import Entity.HDBOfficer;
 import Entity.Project;
 import Interface.IApplicantApplicationControl;
 import Interface.IApplicantProjectControl;

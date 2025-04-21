@@ -2,8 +2,8 @@ package Interface;
 
 import java.util.List;
 
-import Boundary.HDBManager;
 import Entity.ApplicantApplication;
+import Entity.HDBManager;
 import Entity.OfficerRegistration;
 
 public interface IManagerApplicationControl {

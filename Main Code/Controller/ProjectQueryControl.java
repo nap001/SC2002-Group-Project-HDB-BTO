@@ -3,9 +3,9 @@ package Controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import Boundary.HDBManager;
-import Boundary.HDBOfficer;
 import Database.ProjectList;
+import Entity.HDBManager;
+import Entity.HDBOfficer;
 import Entity.Project;
 import Interface.IProjectQueryControl;
 

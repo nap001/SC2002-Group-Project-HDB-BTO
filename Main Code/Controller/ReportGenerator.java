@@ -3,7 +3,6 @@ package Controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import Boundary.Applicant;
 import Database.FlatBookingList;
 import Entity.*;
 import Interface.IReportGenerator;

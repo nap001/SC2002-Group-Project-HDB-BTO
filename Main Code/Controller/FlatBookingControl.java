@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import Boundary.Applicant;
-import Boundary.HDBOfficer;
 import Database.ApplicantApplicationList;
 import Database.FlatBookingList;
 import Database.ProjectList;
 import ENUM.ApplicationStatus;
 import ENUM.FlatType;
+import Entity.Applicant;
 import Entity.ApplicantApplication;
 import Entity.FlatBooking;
+import Entity.HDBOfficer;
 import Entity.Project;
 import Interface.IFlatBookingControl;
 import Interface.IProjectQueryControl;

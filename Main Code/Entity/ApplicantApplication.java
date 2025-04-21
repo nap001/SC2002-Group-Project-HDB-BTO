@@ -5,8 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import Boundary.Applicant;
-import Boundary.User;
 import ENUM.ApplicationStatus;
 import ENUM.FlatType;
 

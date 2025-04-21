@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import Entity.HDBOfficer;
 import Entity.OfficerRegistration;
-import Boundary.HDBOfficer;
 import Entity.Project;
 
 public class OfficerRegistrationList implements Serializable{

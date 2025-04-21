@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import Boundary.Applicant;
-import Boundary.HDBManager;
-import Boundary.HDBOfficer;
-import Boundary.User;
 import Database.EnquiryList;
+import Entity.Applicant;
 import Entity.Enquiry;
+import Entity.HDBManager;
+import Entity.HDBOfficer;
 import Entity.Project;
+import Entity.User;
 import Interface.IApplicantEnquiryControl;
 import Interface.IApplicantProjectControl;
 import Interface.IEnquiryControl;

@@ -1,8 +1,8 @@
 package Controller;
 
-import Boundary.HDBOfficer;
 import Database.OfficerRegistrationList;
 import Entity.ApplicantApplication;
+import Entity.HDBOfficer;
 import Entity.OfficerRegistration;
 import Entity.Project;
 import Interface.IOfficerRegistrationControl;

@@ -3,8 +3,8 @@ package Interface;
 import java.time.LocalDate;
 import java.util.Map;
 
-import Boundary.HDBManager;
 import ENUM.FlatType;
+import Entity.HDBManager;
 
 public interface IProjectManagementControl {
     void createProject(HDBManager manager, String projectName, String neighbourhood,

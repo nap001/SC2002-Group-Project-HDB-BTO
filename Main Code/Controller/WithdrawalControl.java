@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import Boundary.Applicant;
 import Database.WithdrawalList;
 import ENUM.ApplicationStatus;
 import ENUM.FlatType;
+import Entity.Applicant;
 import Entity.ApplicantApplication;
 import Entity.Project;
 import Entity.Withdrawal;

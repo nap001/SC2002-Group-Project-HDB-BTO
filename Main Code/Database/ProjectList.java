@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
-import Boundary.HDBManager;
+import Entity.HDBManager;
 import Entity.Project;
 
 public class ProjectList implements Serializable{

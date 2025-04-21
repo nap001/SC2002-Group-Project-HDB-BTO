@@ -1,8 +1,8 @@
 package Interface;
 
-import Boundary.Applicant;
-import Boundary.User;
+import Entity.Applicant;
 import Entity.Enquiry;
+import Entity.User;
 
 public interface IEnquiryControl {
 

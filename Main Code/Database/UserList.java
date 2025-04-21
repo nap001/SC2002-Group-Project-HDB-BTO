@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import Boundary.User;
+import Entity.User;
 import Interface.UserAuthenticator;
 
 public class UserList implements Serializable, UserAuthenticator {

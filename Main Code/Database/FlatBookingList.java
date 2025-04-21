@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import Boundary.Applicant;
+import Entity.Applicant;
 import Entity.FlatBooking;
 
 public class FlatBookingList implements Serializable{

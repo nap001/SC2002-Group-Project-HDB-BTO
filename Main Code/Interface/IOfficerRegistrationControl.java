@@ -1,6 +1,6 @@
 package Interface;
 
-import Boundary.HDBOfficer;
+import Entity.HDBOfficer;
 import Entity.OfficerRegistration;
 import Entity.Project;
 

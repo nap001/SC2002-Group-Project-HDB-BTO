@@ -3,9 +3,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
-import Boundary.Applicant;
-import Boundary.HDBManager;
-import Boundary.HDBOfficer;
 import ENUM.FlatType;
 
 public class Project implements Serializable{

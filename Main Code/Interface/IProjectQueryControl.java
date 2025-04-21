@@ -2,7 +2,7 @@ package Interface;
 
 import java.util.List;
 
-import Boundary.HDBManager;
+import Entity.HDBManager;
 import Entity.Project;
 
 public interface IProjectQueryControl{

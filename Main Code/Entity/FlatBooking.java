@@ -1,6 +1,7 @@
 package Entity;
 
 import Boundary.*;
+
 import Controller.*;
 import ENUM.ApplicationStatus;
 import ENUM.FlatType;

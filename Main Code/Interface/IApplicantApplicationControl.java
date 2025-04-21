@@ -1,6 +1,6 @@
 package Interface;
 
-import Boundary.Applicant;
+import Entity.Applicant;
 import Entity.ApplicantApplication;
 
 public interface IApplicantApplicationControl {

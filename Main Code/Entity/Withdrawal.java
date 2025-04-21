@@ -1,7 +1,7 @@
 package Entity;
 
 import Boundary.*;
-import Boundary.Applicant;
+
 import Controller.*;
 import ENUM.ApplicationStatus;
 import java.util.Map;
