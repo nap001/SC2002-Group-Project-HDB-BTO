@@ -4,19 +4,13 @@ import java.util.Scanner;
 
 import Boundary.HDBOfficer;
 import Entity.Project;
-import Interface.IApplicantApplicationControl;
-import Interface.IApplicantEnquiryControl;
-import Interface.IApplicantProjectControl;
-import Interface.IEnquiryControl;
-import Interface.IFlatBookingControl;
-import Interface.IOfficerRegistrationControl;
-import Interface.IProjectControl;
-import Interface.IReceiptGenerator;
-import Interface.IWithdrawalControl;
+import Interface.*;
 
 public class OfficerUI extends BaseUserUI {
     private final HDBOfficer officer;
-    private final IProjectControl IProjectControl;
+    private final IProjectManagementControl iProjectManagementControl;
+    private final IProjectQueryControl iProjectQueryControl;
+    private final IProjectViewControl iProjectViewControl;  
     private final IEnquiryControl IEnquiryControl; // Used for officer functions
     private final IApplicantEnquiryControl IApplicantEnquiryControl; // Used for applicant functions
     private final IFlatBookingControl IFlatBookingControl;
@@ -27,8 +21,10 @@ public class OfficerUI extends BaseUserUI {
     private final IApplicantProjectControl IApplicantProjectControl;
 
     public OfficerUI(HDBOfficer officer,
-                     IProjectControl IProjectControl,
-                     IApplicantProjectControl IApplicantProjectControl,
+		    		IProjectManagementControl iProjectManagementControl,
+		            IProjectQueryControl iProjectQueryControl,
+		            IProjectViewControl iProjectViewControl,                     
+		            IApplicantProjectControl IApplicantProjectControl,
                      IEnquiryControl IEnquiryControl,
                      IApplicantEnquiryControl IApplicantEnquiryControl,
                      IFlatBookingControl IFlatBookingControl,
@@ -38,7 +34,9 @@ public class OfficerUI extends BaseUserUI {
                      IWithdrawalControl IWithdrawalControl) {
         super(officer);
         this.officer = officer;
-        this.IProjectControl = IProjectControl;
+        this.iProjectManagementControl = iProjectManagementControl;
+        this.iProjectQueryControl = iProjectQueryControl;
+        this.iProjectViewControl = iProjectViewControl;        
         this.IApplicantProjectControl = IApplicantProjectControl;
         this.IEnquiryControl = IEnquiryControl;
         this.IApplicantEnquiryControl = IApplicantEnquiryControl;
@@ -84,19 +82,12 @@ public class OfficerUI extends BaseUserUI {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1 -> officer.viewAllProject(IProjectControl);
-                case 2 -> {
-                    Project assigned = officer.getAssignedProject();
-                    if (assigned != null) {
-                        System.out.println("Assigned Project: " + assigned.getProjectName());
-                    } else {
-                        System.out.println("No project assigned.");
-                    }
-                }
+                case 1 -> officer.viewAllProject(iProjectViewControl);
+                case 2 -> officer.viewAssignedProject(iProjectViewControl);
                 case 3 -> registerForProject();
                 case 4 -> officer.viewAllEnquiries(IEnquiryControl); // Officer-only method
-                case 5 -> officer.replyToEnquiries(IEnquiryControl, IProjectControl); // Officer-only method
-                case 6 -> officer.approveFlatBooking(officer, IFlatBookingControl);
+                case 5 -> officer.replyToEnquiries(IEnquiryControl, iProjectQueryControl); // Officer-only method
+                case 6 -> officer.approveFlatBooking(officer, IFlatBookingControl, iProjectQueryControl);
                 case 7 -> officer.generateReceipts(IReceiptGenerator);
 
                 // Applicant functionality (use IApplicantEnquiryControl)
@@ -123,12 +114,12 @@ public class OfficerUI extends BaseUserUI {
     private void registerForProject() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n=== Register for a Project ===");
-        IProjectControl.viewAllProject();
+        iProjectViewControl.viewAllProject();
 
         System.out.print("Enter the name of the project to register for: ");
         String projectName = scanner.nextLine();
 
-        Project selectedProject = IProjectControl.getProject(projectName);
+        Project selectedProject = iProjectQueryControl.getProject(projectName);
         if (selectedProject != null) {
             officer.registerforProject(selectedProject, IOfficerRegistrationControl);
         } else {

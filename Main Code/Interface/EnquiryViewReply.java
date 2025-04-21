@@ -5,6 +5,6 @@ import Entity.Enquiry;
 import java.util.List;
 
 public interface EnquiryViewReply {
-    void replyToEnquiries(IEnquiryControl enquiryControl, IProjectControl projectControl);
+    void replyToEnquiries(IEnquiryControl enquiryControl, IProjectQueryControl projectControl);
     void viewAllEnquiries(IEnquiryControl enquiryControl);
 }

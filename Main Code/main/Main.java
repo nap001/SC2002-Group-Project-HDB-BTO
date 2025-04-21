@@ -1,21 +1,21 @@
 package main;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import Boundary.*;
-import ENUM.*;
-import Interface.*;
+import Database.*;
 import Serializer.ObjectLoader;
 import Serializer.ObjectSaver;
+import Entity.*;
+import ENUM.*;
+import Interface.*;
 import User_Interface.*;
 import Controller.*;
-import Entity.*;
-import Database.*;
+
 
 public class Main {
 
@@ -49,9 +49,77 @@ public class Main {
         userList.addUser(manager1);
         userList.addUser(officer1);
         userList.addUser(applicant1);
-        
+     // === Add More Managers ===
+        HDBManager manager2 = new HDBManager("S1234567B", "pass234", 40, "Married", "Manager Lisa");
+        HDBManager manager3 = new HDBManager("S1234567C", "pass345", 45, "Single", "Manager Mike");
+        userList.addUser(manager2);
+        userList.addUser(manager3);
+
+        // === Add More Officers if Needed ===
+        HDBOfficer officer2 = new HDBOfficer("S9876543C", "pass567", 28, "Single", "Officer Tim");
+        HDBOfficer officer3 = new HDBOfficer("S9876543D", "pass678", 32, "Married", "Officer Emma");
+        userList.addUser(officer2);
+        userList.addUser(officer3);
+
+        // === Define Flat Data for Reuse ===
+        Map<FlatType, Integer> flatUnits1 = new HashMap<>();
+        flatUnits1.put(FlatType.TWO_ROOM, 50);
+        flatUnits1.put(FlatType.THREE_ROOM, 30);
+
+        Map<FlatType, Double> flatPrices1 = new HashMap<>();
+        flatPrices1.put(FlatType.TWO_ROOM, 180000.0);
+        flatPrices1.put(FlatType.THREE_ROOM, 260000.0);
+
+        // === Create Projects ===
+        Project project1 = new Project(
+            "Sunshine Residences",
+            "Bedok",
+            LocalDate.of(2025, 5, 1),
+            LocalDate.of(2025, 5, 31),
+            true,
+            2,
+            flatUnits1,
+            flatPrices1,
+            manager1,
+            List.of(officer1)
+        );
+
+        Project project2 = new Project(
+            "Skyline Vista",
+            "Tampines",
+            LocalDate.of(2025, 6, 1),
+            LocalDate.of(2025, 6, 30),
+            true,
+            2,
+            flatUnits1,
+            flatPrices1,
+            manager2,
+            List.of(officer2)
+        );
+
+        Project project3 = new Project(
+            "Greenwood Haven",
+            "Yishun",
+            LocalDate.of(2025, 7, 1),
+            LocalDate.of(2025, 7, 31),
+            false,
+            2,
+            flatUnits1,
+            flatPrices1,
+            manager3,
+            List.of(officer3)
+        );
+
+        // === Add Projects to ProjectList ===
+        projectList.addProject(project1);
+        projectList.addProject(project2);
+        projectList.addProject(project3);
+
         // === Initialize Control Classes ===
-        ProjectControl projectControl = new ProjectControl(projectList);
+        ProjectManagementControl projectManagementControl = new ProjectManagementControl(projectList);
+        ProjectQueryControl projectQueryControl = new ProjectQueryControl(projectList);
+        ProjectViewControl projectViewControl = new ProjectViewControl(projectList);
+        ApplicantProjectControl applicantProjectControl = new ApplicantProjectControl(projectQueryControl,projectViewControl);
         ManagerApplicationControl managerApplicationControl = new ManagerApplicationControl(projectList, officerApplicationList, applicantApplicationList, withdrawalList, flatBookingList);
         ApplicantApplicationControl applicantApplicationControl = new ApplicantApplicationControl(applicantApplicationList);
         EnquiryControl enquiryControl = new EnquiryControl(enquiryList);
@@ -81,15 +149,15 @@ public class Main {
 
             // === Launch Role-Specific UI ===
             if (user instanceof HDBManager manager) {
-                ManagerUI managerUI = new ManagerUI(manager, projectControl, managerApplicationControl, enquiryControl, reportGenerator);
+                ManagerUI managerUI = new ManagerUI(manager, projectManagementControl,projectQueryControl,projectViewControl , managerApplicationControl, enquiryControl, reportGenerator);
                 boolean switchUser = managerUI.run(); // returns true if logout
                 if (!switchUser) break;
             } else if (user instanceof HDBOfficer officer) {
-                OfficerUI officerUI = new OfficerUI(officer, projectControl, projectControl, enquiryControl, enquiryControl, flatBookingControl, officerRegistrationControl, receiptGenerator, applicantApplicationControl, withdrawalControl);
+                OfficerUI officerUI = new OfficerUI(officer,  projectManagementControl,projectQueryControl,projectViewControl,applicantProjectControl, enquiryControl, enquiryControl, flatBookingControl, officerRegistrationControl, receiptGenerator, applicantApplicationControl, withdrawalControl);
                 boolean switchUser = officerUI.run();
                 if (!switchUser) break;
             } else if (user instanceof Applicant applicant) {
-                ApplicantUI applicantUI = new ApplicantUI(applicant, projectControl, applicantApplicationControl, enquiryControl, withdrawalControl);
+                ApplicantUI applicantUI = new ApplicantUI(applicant, applicantProjectControl, applicantApplicationControl, enquiryControl, withdrawalControl);
                 boolean switchUser = applicantUI.run();
                 if (!switchUser) break;
             } else {

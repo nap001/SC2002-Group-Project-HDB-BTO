@@ -15,7 +15,7 @@ import Entity.Project;
 import Interface.IApplicantEnquiryControl;
 import Interface.IApplicantProjectControl;
 import Interface.IEnquiryControl;
-import Interface.IProjectControl;
+import Interface.IProjectQueryControl;
 
 public class EnquiryControl implements IEnquiryControl, IApplicantEnquiryControl {
     private EnquiryList enquiryList;
@@ -188,7 +188,7 @@ public class EnquiryControl implements IEnquiryControl, IApplicantEnquiryControl
     }
 
     // Method to allow a user (manager/officer) to reply to enquiries related to their project
-    public void replyToEnquiries(User user, IProjectControl projectControl) {
+    public void replyToEnquiries(User user, IProjectQueryControl projectControl) {
         Project relevantProject = null;
 
         if (user instanceof HDBManager manager) {
@@ -198,7 +198,7 @@ public class EnquiryControl implements IEnquiryControl, IApplicantEnquiryControl
                 return;
             }
         } else if (user instanceof HDBOfficer officer) {
-            relevantProject = officer.getAssignedProject();
+            relevantProject = officer.getAssignedProject(projectControl);
             if (relevantProject == null) {
                 System.out.println("You are not assigned to any project.");
                 return;

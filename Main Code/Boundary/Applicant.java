@@ -3,22 +3,12 @@ package Boundary;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import Controller.ApplicantApplicationControl;
-import Controller.EnquiryControl;
-import Controller.ProjectControl;
-import Controller.WithdrawalControl;
-import ENUM.FlatType;
 import Entity.ApplicantApplication;
 import Entity.Enquiry;
-import Entity.Project;
-import Entity.Withdrawal;
 import Interface.IApplicantApplicationControl;
 import Interface.IApplicantEnquiryControl;
 import Interface.IApplicantProjectControl;
-import Interface.IEnquiryControl;
-import Interface.IProjectControl;
 import Interface.IWithdrawalControl;
 
 public class Applicant extends User implements Serializable{

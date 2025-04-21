@@ -5,22 +5,17 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import Controller.EnquiryControl;
-import Controller.ManagerApplicationControl;
-import Controller.ProjectControl;
-import Controller.ReportGenerator;
 import ENUM.FlatType;
-import Entity.Enquiry;
 import Entity.Project;
 import Entity.Report;
-import Interface.EnquiryViewReply;
 import Interface.IEnquiryControl;
 import Interface.IManagerApplicationControl;
-import Interface.IProjectControl;
+import Interface.IProjectManagementControl;
+import Interface.IProjectQueryControl;
+import Interface.IProjectViewControl;
 import Interface.IReportGenerator;
-import Interface.ProjectView;
 
-public class HDBManager extends User implements ProjectView, EnquiryViewReply, Serializable {
+public class HDBManager extends User implements Serializable {
     private Report generatedReport;
     private static final long serialVersionUID = 1L;
 
@@ -42,12 +37,12 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
     }
 
     // Project Management
-    public void createProject(IProjectControl projectControl, String projectName, String neighbourhood,
+    public void createProject(IProjectManagementControl projectControl, IProjectQueryControl projectQueryControl, String projectName, String neighbourhood,
                               LocalDate applicationOpenDate, LocalDate applicationCloseDate,
                               boolean visibility, int officerSlots,
                               Map<FlatType, Integer> unitCountMap,
                               Map<FlatType, Integer> priceInput) {
-        if (getCurrentlyManagedProject(projectControl) != null) {
+        if (getCurrentlyManagedProject(projectQueryControl) != null) {
             System.out.println("Cannot create a new project. You are already managing a project.");
             return;
         }
@@ -55,21 +50,20 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
                 applicationCloseDate, visibility, officerSlots, unitCountMap, priceInput);
     }
 
-    public void removeProject(IProjectControl projectControl, String projectName) {
-        if (isManagingProject(projectControl, projectName)) {
+    public void removeProject(IProjectManagementControl projectControl,IProjectQueryControl projectQueryControl, String projectName) {
+        if (isManagingProject(projectQueryControl, projectName)) {
             projectControl.removeProject(this, projectName);
         } else {
             System.out.println("You are not managing this project.");
         }
     }
 
-    public void editProject(IProjectControl projectControl, String projectName, int choice, Object newValue) {
+    public void editProject(IProjectManagementControl projectControl, String projectName, int choice, Object newValue) {
         projectControl.editProject(this, projectName, choice, newValue);
     }
 
-    
-    public void toggleProjectVisibility(IProjectControl projectControl, String projectName, boolean isVisible) {
-        Project project = getCurrentlyManagedProject(projectControl);
+    public void toggleProjectVisibility(IProjectManagementControl projectControl, IProjectQueryControl projectQuery, String projectName, boolean isVisible) {
+        Project project = getCurrentlyManagedProject(projectQuery);
         if (project == null) {
             System.out.println("You are not managing any project.");
             return;
@@ -83,13 +77,12 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
         projectControl.toggleProjectVisibility(this, projectName, isVisible);
     }
 
-
-    @Override
-    public void viewAllProject(IProjectControl projectControl) {
+    
+    public void viewAllProject(IProjectViewControl projectControl) {
         projectControl.viewAllProject();
     }
 
-    public void viewMyProjects(IProjectControl projectControl) {
+    public void viewMyProjects(IProjectQueryControl projectControl) {
         Project managedProject = getCurrentlyManagedProject(projectControl);
         if (managedProject == null) {
             System.out.println("You have not created any projects.");
@@ -99,7 +92,7 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
     }
 
     // Officer and Applicant Applications management
-    public boolean manageOfficerApplication(IManagerApplicationControl applicationControl, IProjectControl projectControl, String projectName) {
+    public boolean manageOfficerApplication(IManagerApplicationControl applicationControl, IProjectQueryControl projectControl, String projectName) {
         if (isManagingProject(projectControl, projectName)) {
             return applicationControl.manageOfficerRegistration(this, projectName, projectControl);
         }
@@ -107,7 +100,7 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
         return false;
     }
 
-    public void approveApplicantApplications(IManagerApplicationControl applicationControl, IProjectControl projectControl) {
+    public void approveApplicantApplications(IManagerApplicationControl applicationControl, IProjectQueryControl projectControl) {
         if (getCurrentlyManagedProject(projectControl) == null) {
             System.out.println("You are not managing any project.");
             return;
@@ -121,7 +114,7 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
         }
     }
 
-    public void approveApplicantWithdrawals(IManagerApplicationControl applicationControl, IProjectControl projectControl) {
+    public void approveApplicantWithdrawals(IManagerApplicationControl applicationControl, IProjectQueryControl projectControl) {
         if (getCurrentlyManagedProject(projectControl) == null) {
             System.out.println("You are not managing any project.");
             return;
@@ -135,19 +128,32 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
         }
     }
 
+    public void filterAllProjects(IProjectQueryControl projectControl, String filterType, Object filterValue) {
+        List<Project> filteredProjects = projectControl.filterProjects(filterType, filterValue);
+
+        if (filteredProjects == null || filteredProjects.isEmpty()) {
+            System.out.println("No projects found for the given filter.");
+        } else {
+            System.out.println("Filtered Projects:");
+            for (Project project : filteredProjects) {
+                project.displayProjectDetails();
+            }
+        }
+    }
+
     // Enquiry Management
-    @Override
-    public void replyToEnquiries(IEnquiryControl enquiryControl,  IProjectControl projectControl) {
+    
+    public void replyToEnquiries(IEnquiryControl enquiryControl, IProjectQueryControl projectControl) {
         enquiryControl.replyToEnquiries(this, projectControl);
     }
 
-    @Override
+    
     public void viewAllEnquiries(IEnquiryControl enquiryControl) {
         enquiryControl.viewAllEnquiries();
     }
 
     // Report Management
-    public void generateApplicantReport(IReportGenerator reportGenerator, IProjectControl projectControl, String filterType, Object filterValue) {
+    public void generateApplicantReport(IReportGenerator reportGenerator, IProjectQueryControl projectControl, String filterType, Object filterValue) {
         Project project = getCurrentlyManagedProject(projectControl);
         if (project == null) {
             System.out.println("You are not managing any project. Please select a project first.");
@@ -161,12 +167,12 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
     }
 
     // Owning Project checkings
-    public boolean isManagingProject(IProjectControl projectControl, String projectName) {
+    public boolean isManagingProject(IProjectQueryControl projectControl, String projectName) {
         Project project = getCurrentlyManagedProject(projectControl);
         return project != null && project.getProjectName().equals(projectName);
     }
 
-    public boolean isProjectActive(IProjectControl projectControl) {
+    public boolean isProjectActive(IProjectQueryControl projectControl) {
         Project project = getCurrentlyManagedProject(projectControl);
         if (project == null) return false;
 
@@ -175,11 +181,11 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
                 && !currentDate.isBefore(project.getApplicationOpenDate());
     }
 
-    public Project getCurrentlyManagedProject(IProjectControl projectControl) {
+    public Project getCurrentlyManagedProject(IProjectQueryControl projectControl) {
         return projectControl.filterProjectsByManager(this);
     }
 
-    public boolean stopManagingProject(IProjectControl projectControl) {
+    public boolean stopManagingProject(IProjectQueryControl projectControl) {
         Project project = getCurrentlyManagedProject(projectControl);
         if (project != null) {
             System.out.println("You are no longer managing the project: " + project.getProjectName());
@@ -188,6 +194,4 @@ public class HDBManager extends User implements ProjectView, EnquiryViewReply, S
         System.out.println("You are not managing any project.");
         return false;
     }
-
-
 }

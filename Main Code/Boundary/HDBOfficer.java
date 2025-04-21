@@ -1,29 +1,16 @@
 package Boundary;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Scanner;
 
-import Controller.ApplicantApplicationControl;
-import Controller.EnquiryControl;
-import Controller.FlatBookingControl;
-import Controller.ProjectControl;
-import Controller.ReceiptGenerator;
-import ENUM.FlatType;
-import Entity.ApplicantApplication;
-import Entity.Enquiry;
-import Entity.OfficerRegistration;
-import Controller.OfficerRegistrationControl;
 import Entity.Project;
-import Interface.EnquiryViewReply;
 import Interface.IEnquiryControl;
 import Interface.IFlatBookingControl;
 import Interface.IOfficerRegistrationControl;
-import Interface.IProjectControl;
+import Interface.IProjectQueryControl;
+import Interface.IProjectViewControl;
 import Interface.IReceiptGenerator;
-import Interface.ProjectView;
 
-public class HDBOfficer extends Applicant implements ProjectView,EnquiryViewReply, Serializable{
+public class HDBOfficer extends Applicant implements Serializable{
     private Project assignedProject;
     private static final long serialVersionUID = 1L;  // Add serialVersionUID for version control
 
@@ -41,8 +28,8 @@ public class HDBOfficer extends Applicant implements ProjectView,EnquiryViewRepl
         return "Officer";
     }
     
-    @Override
-    public void viewAllProject(IProjectControl projectControl) {
+    
+    public void viewAllProject(IProjectViewControl projectControl) {
         projectControl.viewAllProject();
     }
     
@@ -50,9 +37,14 @@ public class HDBOfficer extends Applicant implements ProjectView,EnquiryViewRepl
         this.assignedProject = project;
         System.out.println("Assigned to project: " + project.getProjectName());
     }
+    
+    public Project getPersonalAssignedProject() {
+        return this.assignedProject;
+    }
 
-    public Project getAssignedProject() {
-        return assignedProject;
+    public Project getAssignedProject(IProjectQueryControl projectControl) {
+        this.assignedProject = projectControl.getProjectByOfficerNRIC(this.getNRIC());
+        return this.assignedProject;
     }
     
     public void registerforProject(Project project, IOfficerRegistrationControl officerRegistrationControl) {
@@ -65,8 +57,8 @@ public class HDBOfficer extends Applicant implements ProjectView,EnquiryViewRepl
     }
 
 
-	public void approveFlatBooking(HDBOfficer officer, IFlatBookingControl flatBookingControl) {
-			boolean success = flatBookingControl.approveFlatBookingInteractive(this);
+	public void approveFlatBooking(HDBOfficer officer, IFlatBookingControl flatBookingControl, IProjectQueryControl projectControl) {
+			boolean success = flatBookingControl.approveFlatBookingInteractive(this, projectControl);
 			
 			if (success) {
 			System.out.println("Flat booking approved successfully.");
@@ -77,12 +69,10 @@ public class HDBOfficer extends Applicant implements ProjectView,EnquiryViewRepl
 
 
 
-    @Override
-    public void replyToEnquiries(IEnquiryControl enquiryControl, IProjectControl projectcontrol) {
+    public void replyToEnquiries(IEnquiryControl enquiryControl, IProjectQueryControl projectcontrol) {
         enquiryControl.replyToEnquiries(this, projectcontrol); 
     }
 
-    @Override
     public void viewAllEnquiries(IEnquiryControl enquiryControl) {
         enquiryControl.viewAllEnquiries();
     }
@@ -95,8 +85,10 @@ public class HDBOfficer extends Applicant implements ProjectView,EnquiryViewRepl
 
         receiptGenerator.generateReceiptsForProject(assignedProject);
     }
-    
 
+    public void viewAssignedProject(IProjectViewControl projectControl) {
+        projectControl.viewAssignedProject(this);
+    }
 
 
 }

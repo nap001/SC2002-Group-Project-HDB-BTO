@@ -11,19 +11,25 @@ import ENUM.FlatType;
 
 public class ManagerUI extends BaseUserUI {
     private final HDBManager manager;
-    private final IProjectControl iProjectControl;
+    private final IProjectManagementControl iProjectManagementControl;
+    private final IProjectQueryControl iProjectQueryControl;
+    private final IProjectViewControl iProjectViewControl;
     private final IManagerApplicationControl iApplicationControl;
     private final IEnquiryControl iEnquiryControl;
     private final IReportGenerator iReportGenerator;
 
     public ManagerUI(HDBManager manager,
-                     IProjectControl iProjectControl,
+    		IProjectManagementControl iProjectManagementControl,
+                     IProjectQueryControl iProjectQueryControl,
+                     IProjectViewControl iProjectViewControl,
                      IManagerApplicationControl iApplicationControl,
                      IEnquiryControl iEnquiryControl,
                      IReportGenerator iReportGenerator) {
         super(manager);
         this.manager = manager;
-        this.iProjectControl = iProjectControl;
+        this.iProjectManagementControl = iProjectManagementControl;
+        this.iProjectQueryControl = iProjectQueryControl;
+        this.iProjectViewControl = iProjectViewControl;
         this.iApplicationControl = iApplicationControl;
         this.iEnquiryControl = iEnquiryControl;
         this.iReportGenerator = iReportGenerator;
@@ -37,17 +43,18 @@ public class ManagerUI extends BaseUserUI {
             System.out.println("\n=== HDB Manager Menu ===");
             System.out.println("1. View All Projects");
             System.out.println("2. View My Projects");
-            System.out.println("3. Create New Project");
-            System.out.println("4. Remove Project");
-            System.out.println("5. Edit Project");
-            System.out.println("6. Toggle Project Visibility");
-            System.out.println("7. View All Enquiries");
-            System.out.println("8. Reply to Enquiries");
-            System.out.println("9. Manage Officer Applications");
-            System.out.println("10. Approve Applicant Applications");
-            System.out.println("11. Approve Applicant Withdrawals");
-            System.out.println("12. Generate Applicant Report");
-            System.out.println("13. Display Last Generated Report");
+            System.out.println("3. Filter Project");
+            System.out.println("4. Create New Project");
+            System.out.println("5. Remove Project");
+            System.out.println("6. Edit Project");
+            System.out.println("7. Toggle Project Visibility");
+            System.out.println("8. View All Enquiries");
+            System.out.println("9. Reply to Enquiries");
+            System.out.println("10. Manage Officer Applications");
+            System.out.println("11. Approve Applicant Applications");
+            System.out.println("12. Approve Applicant Withdrawals");
+            System.out.println("13. Generate Applicant Report");
+            System.out.println("14. Display Last Generated Report");
             System.out.println("0. Logout and Switch User");
             System.out.println("-1. Change Password");
             System.out.print("Enter your choice: ");
@@ -56,29 +63,30 @@ public class ManagerUI extends BaseUserUI {
             scanner.nextLine(); // consume newline
 
             switch (choice) {
-                case 1 -> manager.viewAllProject(iProjectControl);
-                case 2 -> manager.viewMyProjects(iProjectControl);
-                case 3 -> createProject(scanner);
-                case 4 -> removeProject(scanner);
-                case 5 -> editProject(scanner);
-                case 6 -> toggleProjectVisibility(scanner);
-                case 7 -> manager.viewAllEnquiries(iEnquiryControl);
-                case 8 -> manager.replyToEnquiries(iEnquiryControl, iProjectControl);
-                case 9 -> manageOfficerApplications(scanner);
-                case 10 -> manager.approveApplicantApplications(iApplicationControl, iProjectControl);
-                case 11 -> manager.approveApplicantWithdrawals(iApplicationControl, iProjectControl);
-                case 12 -> generateReport(scanner);
-                case 13 -> manager.displayGeneratedReport(iReportGenerator);
-                case 0 -> {
-                    System.out.println("Logging out...");
-                    return true;
-                }
-                case -1 -> changePassword();
-                default -> System.out.println("Invalid choice.");
+            case 1 -> manager.viewAllProject(iProjectViewControl);
+            case 2 -> manager.viewMyProjects(iProjectQueryControl);
+            case 3 -> filterProjects(scanner); // NEW: Filter Project
+            case 4 -> createProject(scanner);
+            case 5 -> removeProject(scanner);
+            case 6 -> editProject(scanner);
+            case 7 -> toggleProjectVisibility(scanner);
+            case 8 -> manager.viewAllEnquiries(iEnquiryControl);
+            case 9 -> manager.replyToEnquiries(iEnquiryControl, iProjectQueryControl);
+            case 10 -> manageOfficerApplications(scanner);
+            case 11 -> manager.approveApplicantApplications(iApplicationControl, iProjectQueryControl);
+            case 12 -> manager.approveApplicantWithdrawals(iApplicationControl, iProjectQueryControl);
+            case 13 -> generateReport(scanner);
+            case 14 -> manager.displayGeneratedReport(iReportGenerator);
+            case 0 -> {
+                System.out.println("Logging out...");
+                return true;
             }
+            case -1 -> changePassword();
+            default -> System.out.println("Invalid choice.");
+        }
 
-        } while (true);
-    }
+    } while (true);
+}
 
     private void editProject(Scanner scanner) {
         System.out.print("Enter project name to edit: ");
@@ -120,7 +128,7 @@ public class ManagerUI extends BaseUserUI {
             }
         }
 
-        manager.editProject(iProjectControl, projectName, editChoice, newValue);
+        manager.editProject(iProjectManagementControl, projectName, editChoice, newValue);
     }
 
     private void generateReport(Scanner scanner) {
@@ -175,7 +183,7 @@ public class ManagerUI extends BaseUserUI {
         }
 
         // Generate and display the report
-        manager.generateApplicantReport(iReportGenerator, iProjectControl, filterType, filterValue);
+        manager.generateApplicantReport(iReportGenerator, iProjectQueryControl, filterType, filterValue);
         manager.displayGeneratedReport(iReportGenerator);
     }
 
@@ -208,14 +216,14 @@ public class ManagerUI extends BaseUserUI {
             priceMap.put(flatType, Integer.parseInt(scanner.nextLine()));
         }
 
-        manager.createProject(iProjectControl, projectName, neighbourhood, openDate,
+        manager.createProject(iProjectManagementControl,iProjectQueryControl, projectName, neighbourhood, openDate,
                 closeDate, visible, officerSlots, unitCountMap, priceMap);
     }
 
     private void removeProject(Scanner scanner) {
         System.out.print("Enter project name to remove: ");
         String projectName = scanner.nextLine();
-        manager.removeProject(iProjectControl, projectName);
+        manager.removeProject(iProjectManagementControl,iProjectQueryControl, projectName);
     }
 
     private void toggleProjectVisibility(Scanner scanner) {
@@ -225,13 +233,63 @@ public class ManagerUI extends BaseUserUI {
         System.out.print("Enter new visibility (true/false): ");
         boolean isVisible = Boolean.parseBoolean(scanner.nextLine());
 
-        manager.toggleProjectVisibility(iProjectControl, projectName, isVisible);
+        manager.toggleProjectVisibility(iProjectManagementControl,iProjectQueryControl, projectName, isVisible);
     }
 
     private void manageOfficerApplications(Scanner scanner) {
         System.out.print("Enter project name to manage officer applications: ");
         String projectName = scanner.nextLine();
 
-        manager.manageOfficerApplication(iApplicationControl, iProjectControl, projectName);
+        manager.manageOfficerApplication(iApplicationControl, iProjectQueryControl, projectName);
     }
+    
+    private void filterProjects(Scanner scanner) {
+        System.out.println("Filter projects by:");
+        System.out.println("1. Project Name");
+        System.out.println("2. Neighbourhood");
+        System.out.println("3. Visibility");
+        System.out.print("Enter your choice: ");
+
+        int filterChoice;
+        try {
+            filterChoice = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            return;
+        }
+
+        String filterType = null;
+        Object filterValue = null;
+
+        switch (filterChoice) {
+            case 1 -> {
+                filterType = "projectname";
+                System.out.print("Enter project name to filter: ");
+                filterValue = scanner.nextLine();
+            }
+            case 2 -> {
+                filterType = "neighbourhood";
+                System.out.print("Enter neighbourhood to filter: ");
+                filterValue = scanner.nextLine();
+            }
+            case 3 -> {
+                filterType = "visibility";
+                System.out.print("Enter visibility status (true/false): ");
+                try {
+                    filterValue = Boolean.parseBoolean(scanner.nextLine());
+                } catch (Exception e) {
+                    System.out.println("Invalid input. Please enter 'true' or 'false'.");
+                    return;
+                }
+            }
+            default -> {
+                System.out.println("Invalid choice.");
+                return;
+            }
+        }
+
+        // Filter and display results
+        manager.filterAllProjects(iProjectQueryControl, filterType, filterValue);
+    }
+
 }

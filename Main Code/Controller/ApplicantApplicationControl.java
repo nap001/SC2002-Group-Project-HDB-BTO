@@ -13,7 +13,6 @@ import Entity.ApplicantApplication;
 import Entity.Project;
 import Interface.IApplicantApplicationControl;
 import Interface.IApplicantProjectControl;
-import Interface.IProjectControl;
 
 public class ApplicantApplicationControl implements IApplicantApplicationControl {
     private ApplicantApplicationList applicationList;
@@ -98,7 +97,7 @@ public class ApplicantApplicationControl implements IApplicantApplicationControl
      // 💡 Officer Restriction
         if (applicant instanceof HDBOfficer) {
             HDBOfficer officer = (HDBOfficer) applicant;
-            Project assignedProject = officer.getAssignedProject();
+            Project assignedProject = officer.getPersonalAssignedProject();
             if (assignedProject != null && assignedProject.getProjectName().equals(selectedProject.getProjectName())) {
                 System.out.println("Officers cannot apply as an applicant for their assigned project.");
                 return;

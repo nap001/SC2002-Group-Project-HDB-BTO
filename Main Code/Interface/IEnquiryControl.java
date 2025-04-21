@@ -2,9 +2,7 @@ package Interface;
 
 import Boundary.Applicant;
 import Boundary.User;
-import Controller.ProjectControl;
 import Entity.Enquiry;
-import Entity.Project;
 
 public interface IEnquiryControl {
 
@@ -30,5 +28,5 @@ public interface IEnquiryControl {
     void deleteEnquiry(Applicant applicant, IApplicantProjectControl projectControl);
 
     // Method to allow a user (manager/officer) to reply to enquiries related to their project
-    void replyToEnquiries(User use, IProjectControl projectControl);
+    void replyToEnquiries(User use, IProjectQueryControl projectControl);
 }

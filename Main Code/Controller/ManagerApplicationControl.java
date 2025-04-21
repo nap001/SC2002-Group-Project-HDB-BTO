@@ -1,6 +1,5 @@
 package Controller;
-import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -21,7 +20,7 @@ import Entity.OfficerRegistration;
 import Entity.Project;
 import Entity.Withdrawal;
 import Interface.IManagerApplicationControl;
-import Interface.IProjectControl;
+import Interface.IProjectQueryControl;
 
 public class ManagerApplicationControl implements IManagerApplicationControl{
     private ProjectList projectDatabase;
@@ -50,7 +49,7 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
         return applicantDatabase.getAllApplications();
     }
 
-    public boolean manageOfficerRegistration(HDBManager manager, String projectName, IProjectControl projectControl) {
+    public boolean manageOfficerRegistration(HDBManager manager, String projectName, IProjectQueryControl projectControl) {
         Project managedProject = manager.getCurrentlyManagedProject(projectControl);
 
         if (managedProject == null || !managedProject.getProjectName().equals(projectName)) {
@@ -134,7 +133,7 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
         return true;
     }
 
-    public boolean approveApplicantApplication(HDBManager manager, IProjectControl projectControl) {
+    public boolean approveApplicantApplication(HDBManager manager, IProjectQueryControl projectControl) {
         // Fetch all applications in the database
         List<ApplicantApplication> allApplications = applicantDatabase.getAllApplications();
 
@@ -184,7 +183,7 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
         return true;
     }
 
-    public boolean approveWithdrawals(HDBManager manager,  IProjectControl projectControl) {
+    public boolean approveWithdrawals(HDBManager manager,  IProjectQueryControl projectControl) {
         Project project = manager.getCurrentlyManagedProject(projectControl);
         if (project == null || !manager.equals(project.getHdbManager())) {
             System.out.println("You are not authorized to approve withdrawals for this project.");

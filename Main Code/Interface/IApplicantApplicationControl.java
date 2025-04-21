@@ -1,9 +1,7 @@
 package Interface;
 
 import Boundary.Applicant;
-import Controller.ProjectControl;
 import Entity.ApplicantApplication;
-import Entity.Project;
 
 public interface IApplicantApplicationControl {
     

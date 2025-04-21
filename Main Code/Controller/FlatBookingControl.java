@@ -1,10 +1,10 @@
 package Controller;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Date;
 
 import Boundary.Applicant;
 import Boundary.HDBOfficer;
@@ -17,6 +17,7 @@ import Entity.ApplicantApplication;
 import Entity.FlatBooking;
 import Entity.Project;
 import Interface.IFlatBookingControl;
+import Interface.IProjectQueryControl;
 
 public class FlatBookingControl implements IFlatBookingControl{
 	Scanner sc = new Scanner(System.in);
@@ -31,8 +32,8 @@ public class FlatBookingControl implements IFlatBookingControl{
     }
 
 	
-	public boolean approveFlatBookingInteractive(HDBOfficer officer) {
-	    Project assignedProject = officer.getAssignedProject();
+	public boolean approveFlatBookingInteractive(HDBOfficer officer, IProjectQueryControl projectControl) {
+	    Project assignedProject = officer.getAssignedProject(projectControl);
 	
 	    if (assignedProject == null) {
 	        System.out.println("Officer has no assigned project.");
