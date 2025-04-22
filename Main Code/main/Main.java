@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import Boundary.*;
-import Database.*;
-import Serializer.ObjectLoader;
-import Serializer.ObjectSaver;
-import Entity.*;
+import boundary.*;
+import controller.*;
+import database.*;
+import entity.*;
+import interfaces.*;
+import serializer.ObjectLoader;
+import serializer.ObjectSaver;
 import ENUM.*;
-import Interface.*;
-import Controller.*;
 
 
 public class Main {
@@ -56,7 +56,7 @@ public class Main {
 
         // === Add More Officers if Needed ===
         HDBOfficer officer2 = new HDBOfficer("S9876543C", "pass567", 28, "Single", "Officer Tim");
-        HDBOfficer officer3 = new HDBOfficer("S9876543D", "pass678", 32, "Married", "Officer Emma");
+        HDBOfficer officer3 = new HDBOfficer("S9876543D", "pa", 32, "Married", "Officer Emma");
         userList.addUser(officer2);
         userList.addUser(officer3);
 
