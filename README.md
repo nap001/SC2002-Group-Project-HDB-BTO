@@ -55,14 +55,14 @@ Make sure the required serializable files are placed in the correct directory
 
 Run the main.java class to start the application.
 
-⚙️ Usage
+### ⚙️ Usage
 Upon launching:
 
 Login using NRIC and password given on NTULearn SC2002 Assignment CSV files.
 
 The system automatically identifies your role and display avaiiable capabilities through menu tables
 
-📂 Project Structure
+### 📂 Project Structure
 
 Each package follows the MVC (Model-View-Controller) design pattern:
 - **Entity** represents the models (data and domain logic).
@@ -73,11 +73,11 @@ Each package follows the MVC (Model-View-Controller) design pattern:
 - **Database** stores entity data for easy access during runtime.
 - **ENUM** adds clean, readable constants for states and types.
 
-📦 Dependencies
+### 📦 Dependencies
 Java 16 or higher
 
 
-✨ Additional Features
+### ✨ Additional Features
 🔐 Password Change Functionality
 Users can change their password through the UI menu after logging in.
 
@@ -87,7 +87,7 @@ Clear and user-friendly display of data such as project listings, application st
 💾 Data Persistence
 All changes (projects, applications, user credentials, bookings) are automatically saved back to CSV files to preserve data across sessions.
 
-👨‍💻 Authors
+### 👨‍💻 Authors
 Satitmannaitham Napatr
 SATITMANNAITHAM NAPATR	
 TAHSEEN NAZIR	
