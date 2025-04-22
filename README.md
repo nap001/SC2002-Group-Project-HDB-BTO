@@ -88,13 +88,12 @@ Clear and user-friendly display of data such as project listings, application st
 All changes (projects, applications, user credentials, bookings) are automatically saved back to CSV files to preserve data across sessions.
 
 ### 👨‍💻 Authors
-Satitmannaitham Napatr
-SATITMANNAITHAM NAPATR	
-TAHSEEN NAZIR	
-TARUN ILANGOVAN	
-TO WEN JUN	
-WANG QUANZHI	
-WOO JIA ERN
+####  Satitmannaitham Napatr
+#### TAHSEEN NAZIR	
+#### TARUN ILANGOVAN	
+#### TO WEN JUN	
+#### WANG QUANZHI	
+#### WOO JIA ERN
 
 
 
