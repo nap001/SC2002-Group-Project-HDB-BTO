@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"boundary"},{"l":"controller"},{"l":"database"},{"l":"entity"},{"l":"ENUM"},{"l":"interfaces"},{"l":"main"},{"l":"serializer"}];updateSearchResults();
