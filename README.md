@@ -40,7 +40,7 @@ The system ensures data persistence through file storage and adheres to SOLID pr
 
 ### ✅ Prerequisites
 
-- Java 16 or higher
+- Java 17 or higher
 - A Java IDE (e.g., IntelliJ IDEA, Eclipse)
 
 ### 🚀 Installation & Run
@@ -74,7 +74,7 @@ Each package follows the MVC (Model-View-Controller) design pattern:
 - **ENUM** adds clean, readable constants for states and types.
 
 ### 📦 Dependencies
-Java 16 or higher
+Java 17 or higher
 
 
 ### ✨ Additional Features
@@ -85,7 +85,7 @@ Users can change their password through the UI menu after logging in.
 Clear and user-friendly display of data such as project listings, application statuses, and user info using console tables.
 
 💾 Data Persistence
-All changes (projects, applications, user credentials, bookings) are automatically saved back to CSV files to preserve data across sessions.
+All changes (projects, applications, user credentials, bookings) are automatically saved back to serializable files to preserve data across sessions.
 
 ### 👨‍💻 Authors
 ####  Satitmannaitham Napatr
