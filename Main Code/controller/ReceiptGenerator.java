@@ -21,7 +21,7 @@ public class ReceiptGenerator implements IReceiptGenerator {
         boolean found = false;
 
         for (FlatBooking booking : bookings) {
-            if (booking.getProject().equals(project)) {
+            if (booking.getProject().getProjectName().equals(project.getProjectName())) {
                 Applicant applicant = booking.getApplicant();
                 System.out.println("=== Receipt ===");
                 System.out.println("Name         : " + applicant.getName());

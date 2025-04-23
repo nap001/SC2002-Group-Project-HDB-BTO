@@ -71,4 +71,6 @@ public class Enquiry implements Serializable{
 		timestamp = now;
 		
 	}
+
+
 }

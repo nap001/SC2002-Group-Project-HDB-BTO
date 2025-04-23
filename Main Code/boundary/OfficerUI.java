@@ -59,7 +59,7 @@ public class OfficerUI extends BaseUserUI {
             System.out.println("5. Reply to Enquiries");
             System.out.println("6. Approve BTO Bookings");
             System.out.println("7. Generate Receipt for Flat Bookings");
-
+            System.out.println("");
             System.out.println("--- Applicant Functionalities ---");
             System.out.println("8. View Project List");
             System.out.println("9. Create Application");

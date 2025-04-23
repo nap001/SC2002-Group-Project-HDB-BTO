@@ -20,7 +20,7 @@ public class ReportGenerator implements IReportGenerator{
 
 	    for (FlatBooking booking : flatBookingList.getAllBookings()) {
 	        // Filter only bookings for the current project
-	        if (!booking.getProject().equals(currentlyManagedProject)) continue;
+	        if (!booking.getProject().getProjectName().equals(currentlyManagedProject.getProjectName())) continue;
 
 	        Applicant applicant = booking.getApplicant();
 

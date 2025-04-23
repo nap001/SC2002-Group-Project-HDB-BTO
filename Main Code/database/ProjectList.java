@@ -37,7 +37,7 @@ public class ProjectList implements Serializable{
     // Overloaded method: Get projects by manager
     public Project getProjects(HDBManager manager) {
         for (Project project : projects) {
-            if (project.getHdbManager().equals(manager)) {
+            if (project.getHdbManager().getName().equals(manager.getName())) {
                 return project;
             }
         }

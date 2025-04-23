@@ -1,6 +1,7 @@
 package main;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import entity.*;
 import interfaces.*;
 import serializer.ObjectLoader;
 import serializer.ObjectSaver;
+import serializer.ReferenceNormalizer;
 import ENUM.*;
 
 
@@ -39,80 +41,14 @@ public class Main {
         if (flatBookingList == null) flatBookingList = new FlatBookingList();
         if (withdrawalList == null) withdrawalList = new WithdrawalList();
 
+     // === Normalize All Cross-References ===
+        ReferenceNormalizer.normalize(projectList,  userList,
+        		officerApplicationList,
+                 flatBookingList,
+                 applicantApplicationList,
+                 enquiryList,
+                 withdrawalList);
 
-        // === Sample Users (in place of a real DB or CSV file) ===
-        HDBManager manager1 = new HDBManager("S1234567A", "pass123", 35, "Single", "Manager John");
-        HDBOfficer officer1 = new HDBOfficer("S9876543B", "pass456", 30, "Married", "Officer Jane");
-        Applicant applicant1 = new Applicant("S8888888C", "pass789", 36, "Single", "Applicant Alex");
-
-        userList.addUser(manager1);
-        userList.addUser(officer1);
-        userList.addUser(applicant1);
-     // === Add More Managers ===
-        HDBManager manager2 = new HDBManager("S1234567B", "pass234", 40, "Married", "Manager Lisa");
-        HDBManager manager3 = new HDBManager("S1234567C", "pass345", 45, "Single", "Manager Mike");
-        userList.addUser(manager2);
-        userList.addUser(manager3);
-
-        // === Add More Officers if Needed ===
-        HDBOfficer officer2 = new HDBOfficer("S9876543C", "pass567", 28, "Single", "Officer Tim");
-        HDBOfficer officer3 = new HDBOfficer("S9876543D", "pa", 32, "Married", "Officer Emma");
-        userList.addUser(officer2);
-        userList.addUser(officer3);
-
-        // === Define Flat Data for Reuse ===
-        Map<FlatType, Integer> flatUnits1 = new HashMap<>();
-        flatUnits1.put(FlatType.TWO_ROOM, 50);
-        flatUnits1.put(FlatType.THREE_ROOM, 30);
-
-        Map<FlatType, Double> flatPrices1 = new HashMap<>();
-        flatPrices1.put(FlatType.TWO_ROOM, 180000.0);
-        flatPrices1.put(FlatType.THREE_ROOM, 260000.0);
-
-        // === Create Projects ===
-        Project project1 = new Project(
-            "Sunshine Residences",
-            "Bedok",
-            LocalDate.of(2025, 5, 1),
-            LocalDate.of(2025, 5, 31),
-            true,
-            2,
-            flatUnits1,
-            flatPrices1,
-            manager1,
-            List.of(officer1)
-        );
-
-        Project project2 = new Project(
-            "Skyline Vista",
-            "Tampines",
-            LocalDate.of(2025, 6, 1),
-            LocalDate.of(2025, 6, 30),
-            true,
-            2,
-            flatUnits1,
-            flatPrices1,
-            manager2,
-            List.of(officer2)
-        );
-
-        Project project3 = new Project(
-            "Greenwood Haven",
-            "Yishun",
-            LocalDate.of(2025, 7, 1),
-            LocalDate.of(2025, 7, 31),
-            false,
-            2,
-            flatUnits1,
-            flatPrices1,
-            manager3,
-            List.of(officer3)
-        );
-
-        // === Add Projects to ProjectList ===
-        projectList.addProject(project1);
-        projectList.addProject(project2);
-        projectList.addProject(project3);
 
         // === Initialize Control Classes ===
         ProjectManagementControl projectManagementControl = new ProjectManagementControl(projectList);

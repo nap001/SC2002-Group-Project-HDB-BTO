@@ -52,7 +52,7 @@ public class FlatBookingList implements Serializable{
         if (applicant == null) return null;
 
         for (FlatBooking booking : flatBookings) {
-            if (booking.getApplicant().equals(applicant)) {
+            if (booking.getApplicant().getNRIC().equals(applicant.getNRIC())) {
                 return booking;
             }
         }

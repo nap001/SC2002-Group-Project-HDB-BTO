@@ -32,7 +32,7 @@ public class WithdrawalControl implements IWithdrawalControl{
 	
 	public boolean hasPendingWithdrawal(Applicant applicant) {
 	    for (Withdrawal withdrawal : withdrawalList.getAllWithdrawals()) {
-	        if (withdrawal.getApplicant().equals(applicant) &&
+	        if (withdrawal.getApplicant().getNRIC().equals(applicant.getNRIC()) &&
 	            withdrawal.getStatus() == ApplicationStatus.WITHDRAWNPENDING) {
 	            return true;
 	        }
@@ -46,7 +46,7 @@ public class WithdrawalControl implements IWithdrawalControl{
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	    for (Withdrawal withdrawal : withdrawals) {
-	        if (withdrawal.getApplicant().equals(applicant)) {
+	        if (withdrawal.getApplicant().getNRIC().equals(applicant.getNRIC())) {
 	            found = true;
 	            System.out.println("===========================================");
 	            System.out.println("Applicant Name : " + withdrawal.getApplication().getName());

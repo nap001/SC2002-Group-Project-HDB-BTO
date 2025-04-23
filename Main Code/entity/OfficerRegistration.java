@@ -46,4 +46,16 @@ public class OfficerRegistration implements Serializable{
     public void setRegistrationStatus(boolean status) {
         this.status = status;
     }
+
+
+
+	public void setOfficer(HDBOfficer trueOfficer) {
+		this.officer = trueOfficer;
+	}
+
+
+
+	public void setProject(Project p) {
+		this.project = p;
+	}
 }

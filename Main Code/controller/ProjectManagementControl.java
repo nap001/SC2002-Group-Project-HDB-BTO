@@ -61,7 +61,7 @@ public class ProjectManagementControl implements IProjectManagementControl {
     @Override
     public void editProject(HDBManager manager, String projectName, int choice, Object newValue) {
         Project project = projectDatabase.getProjects(projectName);
-        if (project == null || !project.getHdbManager().equals(manager)) {
+        if (project == null || !project.getHdbManager().getNRIC().equals(manager.getNRIC())) {
             System.out.println("Project not found or access denied.");
             return;
         }
@@ -84,7 +84,7 @@ public class ProjectManagementControl implements IProjectManagementControl {
     @Override
     public void removeProject(HDBManager manager, String projectName) {
         Project project = projectDatabase.getProjects(projectName);
-        if (project != null && project.getHdbManager().equals(manager)) {
+        if (project != null && project.getHdbManager().getNRIC().equals(manager.getNRIC())) {
             projectDatabase.removeProject(project);
             System.out.println("Project Removed: " + project.getProjectName());
         } else {
@@ -95,7 +95,7 @@ public class ProjectManagementControl implements IProjectManagementControl {
     @Override
     public void toggleProjectVisibility(HDBManager manager, String projectName, boolean isVisible) {
         Project project = projectDatabase.getProjects(projectName);
-        if (project != null && project.getHdbManager().equals(manager)) {
+        if (project != null && project.getHdbManager().getNRIC().equals(manager.getNRIC())) {
             project.setVisibility(isVisible);
             System.out.println("Project visibility updated: " + isVisible);
         } else {

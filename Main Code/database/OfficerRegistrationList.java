@@ -38,7 +38,7 @@ public class OfficerRegistrationList implements Serializable{
     public List<OfficerRegistration> getRegistrationsByOfficer(HDBOfficer officer) {
         List<OfficerRegistration> result = new ArrayList<>();
         for (OfficerRegistration reg : registrations) {
-            if (reg.getOfficer().equals(officer)) {
+            if (reg.getOfficer().getNRIC().equals(officer.getNRIC())) {
                 result.add(reg);
             }
         }
@@ -49,7 +49,7 @@ public class OfficerRegistrationList implements Serializable{
     public List<OfficerRegistration> getRegistrationsByProject(Project project) {
         List<OfficerRegistration> result = new ArrayList<>();
         for (OfficerRegistration reg : registrations) {
-            if (reg.getProject().equals(project)) {
+            if (reg.getProject().getProjectName().equals(project.getProjectName())) {
                 result.add(reg);
             }
         }

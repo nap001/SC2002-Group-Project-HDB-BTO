@@ -33,6 +33,7 @@ public class Withdrawal implements Serializable{
 	public ApplicationStatus getStatus() {return status;}
 	public void setStatus(ApplicationStatus status) {this.status = status;}
 	public boolean updateStatus(ApplicationStatus status) {this.status = status; return true;}
-	
+
+
 	
 }

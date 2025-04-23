@@ -66,7 +66,7 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
 
         // Filter relevant registrations for the project
         List<OfficerRegistration> matchingRegistrations = officerRegistrationDatabase.getAllRegistrations().stream()
-            .filter(reg -> reg.getProject().equals(project) && reg.isHandling())
+            .filter(reg -> reg.getProject().getProjectName().equals(project.getProjectName()) && reg.isHandling())
             .collect(Collectors.toList());
 
         if (matchingRegistrations.isEmpty()) {
@@ -144,7 +144,7 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
 
         // Check if the manager is authorized to approve applications for this project
         Project project = manager.getCurrentlyManagedProject(projectControl);
-        if (!manager.equals(project.getHdbManager())) {
+        if (!manager.getNRIC().equals(project.getHdbManager().getNRIC())) {
             System.out.println("You are not authorized to approve applications for this project.");
             return false;
         }
@@ -185,7 +185,7 @@ public class ManagerApplicationControl implements IManagerApplicationControl{
 
     public boolean approveWithdrawals(HDBManager manager,  IProjectQueryControl projectControl) {
         Project project = manager.getCurrentlyManagedProject(projectControl);
-        if (project == null || !manager.equals(project.getHdbManager())) {
+        if (project == null || !manager.getNRIC().equals(project.getHdbManager().getNRIC())) {
             System.out.println("You are not authorized to approve withdrawals for this project.");
             return false;
         }

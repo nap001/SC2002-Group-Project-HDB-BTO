@@ -33,4 +33,13 @@ public class UserList implements Serializable, UserAuthenticator {
     public boolean exists(String nric) {
         return userList.stream().anyMatch(user -> user.getNRIC().equals(nric));
     }
+
+    public User getUserByNric(String nric) {
+        for (User user : userList) {
+            if (user.getNRIC().equals(nric)) {
+                return user;
+            }
+        }
+        return null; // Not found
+    }
 }
